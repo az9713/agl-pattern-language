@@ -1,0 +1,207 @@
+[
+  {
+    "symbol": "A",
+    "kind": "operator",
+    "definition": "Ambition: produces proposals, never authorizes execution."
+  },
+  {
+    "symbol": "G",
+    "kind": "operator",
+    "definition": "Goal: executes an approved finite contract."
+  },
+  {
+    "symbol": "L",
+    "kind": "operator",
+    "definition": "Loop: recurrently observes and may respond under contract."
+  },
+  {
+    "symbol": "S",
+    "kind": "ambition_dimension",
+    "definition": "Speed: same outcome, minimized Cost_S."
+  },
+  {
+    "symbol": "H",
+    "kind": "ambition_dimension",
+    "definition": "Altitude: outcome and delegation abstraction."
+  },
+  {
+    "symbol": "D",
+    "kind": "ambition_dimension",
+    "definition": "Depth: expert evidence and epistemic discovery."
+  },
+  {
+    "symbol": "R",
+    "kind": "ambition_dimension",
+    "definition": "Range: verbification and transferable disciplinary methods."
+  },
+  {
+    "symbol": "V",
+    "kind": "operator",
+    "definition": "Independent verification procedure."
+  },
+  {
+    "symbol": "Γ",
+    "kind": "policy",
+    "definition": "Governance: authority, approvals and resource bounds."
+  },
+  {
+    "symbol": "κ",
+    "kind": "contract",
+    "definition": "Frozen approved execution contract."
+  },
+  {
+    "symbol": "x",
+    "kind": "input",
+    "definition": "Original task/problem."
+  },
+  {
+    "symbol": "ξ",
+    "kind": "context",
+    "definition": "Available facts, tools, and constraints."
+  },
+  {
+    "symbol": "π",
+    "kind": "proposal",
+    "definition": "One ambition proposal."
+  },
+  {
+    "symbol": "Π",
+    "kind": "set",
+    "definition": "Nonempty set of ambition proposals."
+  },
+  {
+    "symbol": "φ",
+    "kind": "function",
+    "definition": "Functional objective produced by verbification."
+  },
+  {
+    "symbol": "ρ_NV",
+    "kind": "transform",
+    "definition": "Noun-to-verb transformation operator."
+  },
+  {
+    "symbol": "s_t",
+    "kind": "state",
+    "definition": "Execution system state at step t."
+  },
+  {
+    "symbol": "a_t",
+    "kind": "action",
+    "definition": "Action taken at step t."
+  },
+  {
+    "symbol": "e_t",
+    "kind": "evidence",
+    "definition": "Evidence observed at step t."
+  },
+  {
+    "symbol": "σ_t",
+    "kind": "state",
+    "definition": "Persistent loop state at step t."
+  },
+  {
+    "symbol": "K_t",
+    "kind": "knowledge",
+    "definition": "Validated knowledge state at step t."
+  },
+  {
+    "symbol": "η_t",
+    "kind": "hypothesis",
+    "definition": "Candidate new hypothesis at step t."
+  },
+  {
+    "symbol": "z_t",
+    "kind": "score",
+    "definition": "Surprise/discrepancy score at step t."
+  },
+  {
+    "symbol": "δ",
+    "kind": "threshold",
+    "definition": "Surprise escalation threshold."
+  },
+  {
+    "symbol": "q_min",
+    "kind": "threshold",
+    "definition": "Minimum quality threshold."
+  },
+  {
+    "symbol": "Q",
+    "kind": "function",
+    "definition": "Quality measure on an implementation proposal."
+  },
+  {
+    "symbol": "Cost_S",
+    "kind": "function",
+    "definition": "Speed cost functional (time, money, human attention)."
+  },
+  {
+    "symbol": "P_κ",
+    "kind": "predicate",
+    "definition": "Goal completion predicate under contract κ."
+  },
+  {
+    "symbol": "W_κ",
+    "kind": "schema",
+    "definition": "Evidence witness requirements under contract κ."
+  },
+  {
+    "symbol": "V_κ",
+    "kind": "function",
+    "definition": "Verifier configured for κ, instantiating V."
+  },
+  {
+    "symbol": "I_κ",
+    "kind": "predicate",
+    "definition": "Always-on state invariant under κ."
+  },
+  {
+    "symbol": "Θ_Γ",
+    "kind": "predicate",
+    "definition": "Governance transition-authorization predicate."
+  },
+  {
+    "symbol": "τ",
+    "kind": "schedule",
+    "definition": "Temporal inspection interval or timing policy."
+  },
+  {
+    "symbol": "Ω",
+    "kind": "function",
+    "definition": "Loop observation function."
+  },
+  {
+    "symbol": "Δ",
+    "kind": "function",
+    "definition": "Loop change-detector function."
+  },
+  {
+    "symbol": "χ",
+    "kind": "predicate",
+    "definition": "Loop action trigger."
+  },
+  {
+    "symbol": "F",
+    "kind": "function",
+    "definition": "Loop authorized response policy."
+  },
+  {
+    "symbol": "β",
+    "kind": "budget",
+    "definition": "Total resource budget, including cumulative bound."
+  },
+  {
+    "symbol": "J",
+    "kind": "operator",
+    "definition": "Strategic review of accumulated evidence."
+  },
+  {
+    "symbol": "Select",
+    "kind": "function",
+    "definition": "Governed selection of an approved contract."
+  },
+  {
+    "symbol": "t",
+    "kind": "index",
+    "definition": "Nonnegative execution step index."
+  }
+]

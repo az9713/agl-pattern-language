@@ -1,0 +1,281 @@
+{
+  "agl_version": "0.4",
+  "pattern": "P4",
+  "ambition": {
+    "S": {
+      "baseline": {
+        "metric": "human_attention",
+        "value": 10
+      },
+      "cost_S": {
+        "dimensions": [
+          "human_attention"
+        ],
+        "objective": "constrained_minimize",
+        "measurement": "versioned measurement procedure"
+      },
+      "quality_floor": "accepted outcome predicate remains satisfied",
+      "same_outcome_constraint": "preserve selected outcome"
+    },
+    "H": {
+      "task": "existing request",
+      "immediate_goal": "first-order result",
+      "ultimate_goal": "validated higher-level result",
+      "observable_outcome": "independent state predicate",
+      "delegation_boundary": "proposal only until approval",
+      "capability_requirements": [
+        "observations"
+      ]
+    },
+    "D": {
+      "expert_standard": "referenced professional standard",
+      "instruments": [
+        "raw evidence"
+      ],
+      "stretch": {
+        "target": "stretch property",
+        "feasibility_test": "falsifiable bound test"
+      },
+      "challenge": {
+        "assumptions": [
+          "initial hypothesis"
+        ],
+        "falsification_procedure": "pre-registered disconfirmation test"
+      },
+      "discovery": {
+        "knowledge_baseline": "versioned known and unknown claims",
+        "exploration_policy": "bounded novel-search procedure",
+        "surprise_detector": "predefined residual threshold",
+        "hypothesis_generator": "candidate hypothesis mechanism",
+        "discriminating_experiment": "holdout differentiating test",
+        "evidence_evaluator": "independently scored evidence",
+        "knowledge_revision_rule": "update with accepted claim status",
+        "novelty_check": "prior-art and baseline comparison",
+        "replication_policy": "second independent measurement",
+        "stopping_rule": "budget or exhausted discriminating tests"
+      },
+      "outside_judge": "versioned external procedure"
+    },
+    "R": {
+      "artifact_noun": "requested artifact",
+      "verbify": {
+        "actor": "intended actor",
+        "action_verb": "perform",
+        "intended_effect": "observable outcome",
+        "operating_context": "context constraints",
+        "success_observation": "measured desired effect",
+        "output": "functional objective φ"
+      },
+      "discipline_discovery": {
+        "input_ref": "#/ambition/R/verbify/output",
+        "candidate_disciplines": [
+          "related discipline"
+        ]
+      },
+      "transfer": {
+        "method": "transfer tested instrument",
+        "applicability_test": "check assumptions before transfer"
+      },
+      "crew": {
+        "functions": [
+          "research function"
+        ],
+        "deliverables": [
+          "reproducible analysis"
+        ]
+      },
+      "integration": {
+        "conflict_resolution": "record competing hypotheses",
+        "outcome_test": "independent functional test"
+      }
+    },
+    "proposal_policy": {
+      "selection_rule": "maximize validated expected value subject to constraints",
+      "uncertainty_representation": "bounded interval with unknowns"
+    }
+  },
+  "contract": {
+    "id": "contract-alpha",
+    "version": 1,
+    "approved": true,
+    "approved_by": "human-owner",
+    "frozen": true,
+    "objective": "independently demonstrable target",
+    "quality_floor": "pre-registered quality constraint",
+    "authorized_actions": [
+      "read",
+      "propose"
+    ],
+    "allowed_resources": [
+      "workspace"
+    ],
+    "acceptance_basis": "external evidence"
+  },
+  "goal": {
+    "contract_ref": "contract-alpha",
+    "executor_id": "executor-main",
+    "objective": "independently demonstrable target",
+    "preconditions": [
+      "approval exists"
+    ],
+    "completion": {
+      "predicate": "accepted condition P_κ",
+      "checks": [
+        "test-verification"
+      ]
+    },
+    "witness": {
+      "evidence_schema": "signed or provenance-preserved result record",
+      "provenance_requirements": "identity and time of producing tool"
+    },
+    "evaluator_ref": "verifier-external",
+    "invariants": {
+      "state": [
+        "scoped resources"
+      ],
+      "transitions": [
+        "authorized effects"
+      ],
+      "acceptance": [
+        "unmodified benchmark"
+      ]
+    },
+    "execution_policy": {
+      "permitted_methods": [
+        "read",
+        "propose"
+      ],
+      "retry_policy": "bounded then escalate"
+    },
+    "budget": {
+      "max_turns": 10,
+      "max_elapsed_seconds": 3600,
+      "max_money": 10
+    },
+    "termination": {
+      "success": "VERIFIED_SUCCESS",
+      "blocked": "BLOCKED",
+      "exhausted": "BUDGET_EXHAUSTED",
+      "cancelled": "CANCELLED"
+    },
+    "output": {
+      "artifacts": [
+        "manifest"
+      ],
+      "report_path": "evidence/report.json"
+    }
+  },
+  "loop": {
+    "contract_ref": "contract-alpha",
+    "timing": {
+      "mode": "fixed",
+      "interval_seconds": 3600
+    },
+    "observation": {
+      "sources": [
+        "external telemetry"
+      ],
+      "freshness_rule": "monotonic timestamp"
+    },
+    "change_detection": {
+      "event_key_field": "event_id",
+      "checkpoint_field": "version",
+      "comparison_procedure": "compare versioned receipts"
+    },
+    "trigger": {
+      "predicate": "new material evidence",
+      "significance_rule": "defined threshold"
+    },
+    "response": {
+      "authorized_actions": [
+        "read",
+        "propose"
+      ],
+      "no_change": "NO_OP",
+      "on_violation": "HALT"
+    },
+    "persistent_state": {
+      "store": "durable ledger",
+      "checkpoint_policy": "atomic commit",
+      "durability_claim": "external transactional persistence"
+    },
+    "safety": {
+      "idempotency": {
+        "event_key": "event_id",
+        "effect_key": "effect_id",
+        "replay_policy": "check ledger and use provider idempotency key"
+      },
+      "continuity": {
+        "atomic_checkpoint_policy": "transactional update",
+        "crash_recovery_policy": "reconcile external effects"
+      },
+      "boundedness": {
+        "per_run_money_limit": 1,
+        "cumulative_money_limit": 20,
+        "max_retries": 2,
+        "expiry": "explicit finite date"
+      },
+      "scope": {
+        "approved_contract_ref": "contract-alpha",
+        "approval_mechanism": "signed approval token"
+      },
+      "concurrency": {
+        "protected_resources": [
+          "workspace"
+        ],
+        "coordination_mechanism": "single writer lease",
+        "conflict_policy": "abort on stale lease"
+      }
+    },
+    "enforcement": {
+      "static_checks": [
+        "schema validation"
+      ],
+      "runtime_guards": [
+        "authorization",
+        "lease",
+        "budget",
+        "dedupe"
+      ],
+      "on_violation": "HALT"
+    },
+    "termination": {
+      "stop_predicate": "approval withdrawn or objective achieved",
+      "expiry_behavior": "stop and persist state"
+    },
+    "output": {
+      "evidence_log": "evidence/log.jsonl",
+      "state_log": "evidence/state.json"
+    }
+  },
+  "verifier": {
+    "id": "verifier-external",
+    "operator": "V",
+    "runner_id": "verifier-separate",
+    "procedure": "pre-registered external test",
+    "evidence_sources": [
+      "signed test report"
+    ],
+    "independence_claim": "separate executor identity and protected reference",
+    "version": "1",
+    "outcomes": [
+      "PASS",
+      "FAIL",
+      "INCONCLUSIVE"
+    ]
+  },
+  "governance": {
+    "policy_id": "policy-alpha",
+    "approved_by": "human-owner",
+    "approval_gates": [
+      "contract revision",
+      "irreversible actions"
+    ],
+    "permission_scope": [
+      "read",
+      "propose"
+    ],
+    "max_money_total": 30,
+    "escalation_rule": "halt on uncertainty"
+  }
+}

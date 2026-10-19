@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="color-scheme" content="dark"/>
+<title>AGL v0.4 — Reference Implementation: Architecture & Onboarding</title>
+<meta name="description" content="A two-tab standalone manual covering the AGL v0.4 theory-to-code map, actual validator checks, Windows setup and hands-on test labs."/>
+<style>
+:root{--bg:#07121a;--panel:#0e1d27;--card:#132633;--card2:#0d202a;--border:#294351;--ink:#e5f0f3;--muted:#a2bac5;--soft:#82a0ac;--accent:#52dfc8;--accentdim:rgba(82,223,200,.1);--danger:#ffb7ab;--mono:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(145deg,#07121a,#0a1820 42%,#07121a);color:var(--ink);font-family:Inter,system-ui,-apple-system,'Segoe UI',Arial,sans-serif;line-height:1.63;font-size:15px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.topline{height:4px;background:linear-gradient(90deg,#1c736e,#62ebd3,#8bbeb3)}
+.hero{max-width:1450px;margin:0 auto;padding:44px 48px 28px}.eyebrow{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.14em;text-transform:uppercase}.hero h1{font-size:clamp(2rem,4vw,3.5rem);line-height:1.06;margin:10px 0 18px;letter-spacing:-.035em}.hero p{max-width:920px;color:var(--muted);font-size:17px;margin:0}.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.stat{background:var(--accentdim);border:1px solid rgba(82,223,200,.25);border-radius:9px;padding:6px 13px;color:#b6f9e9;font-size:12px}
+.tabbar{position:sticky;top:0;z-index:100;backdrop-filter:blur(18px);background:rgba(7,18,26,.96);border-bottom:1px solid var(--border)}.tabbar-inner{max-width:1450px;margin:0 auto;display:flex;gap:4px;align-items:center;padding:0 48px;min-height:62px;flex-wrap:wrap}.tab{border:none;border-bottom:3px solid transparent;color:var(--muted);font-weight:700;font-size:14px;cursor:pointer;background:none;padding:18px 17px 16px}.tab[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}.tab:hover{color:var(--ink)}.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}.split{flex:1}.head-link{font-size:12px;border:1px solid var(--border);border-radius:7px;color:var(--ink);padding:7px 10px;margin:0 4px}
+.layout{max-width:1450px;margin:0 auto;padding:28px 48px 80px;display:grid;grid-template-columns:240px minmax(0,920px);gap:40px}.sidebar{position:sticky;top:92px;align-self:start;height:calc(100vh - 110px);overflow-y:auto;padding-right:16px;border-right:1px solid var(--border)}.side-heading{font-size:11px;letter-spacing:.15em;color:var(--soft);text-transform:uppercase;font-weight:750;margin:8px 0 13px}.toc-link{display:block;color:var(--muted);font-size:12.5px;line-height:1.42;padding:7px 10px;border-radius:7px;margin:2px 0}.toc-link:hover{background:var(--card);color:var(--ink);text-decoration:none}.toc-link.active{background:var(--accentdim);color:var(--accent);border-left:2px solid var(--accent)}.toc-group[hidden]{display:none}
+main{min-width:0}.doc-tab{display:none;min-width:0}.doc-tab.active{display:block;animation:rise .16s ease-out}@keyframes rise{from{opacity:.8;transform:translateY(3px)}to{opacity:1;transform:none}}
+.doc-tab h1{font-size:29px;line-height:1.2;margin:8px 0 22px;letter-spacing:-.02em}.doc-tab h2{font-size:23px;line-height:1.25;margin:42px 0 15px;padding-top:14px;border-top:1px solid var(--border);scroll-margin-top:88px;letter-spacing:-.02em}.doc-tab h3{font-size:17px;margin:28px 0 10px;color:#c5f4e9}.doc-tab p{margin:14px 0;color:#d8e5e9}.doc-tab strong{color:#f5fafb}.doc-tab blockquote{margin:18px 0;padding:14px 18px;border-left:3px solid var(--accent);background:var(--card2);border-radius:0 9px 9px 0}.doc-tab blockquote p{margin:0}.doc-tab ol,.doc-tab ul{padding-left:24px}.doc-tab li{padding-left:4px;margin:6px 0}.doc-tab code:not(pre code){font-family:var(--mono);font-size:.87em;color:#b3f8e4;background:#132b32;border:1px solid #25505a;padding:2px 5px;border-radius:4px}
+.table-wrapper{width:100%;overflow-x:auto;margin:18px 0;border:1px solid var(--border);border-radius:10px}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--card);text-align:left;color:#a5f4e2;font-size:12px;letter-spacing:.02em}th,td{padding:12px 12px;vertical-align:top;border-bottom:1px solid #223d4a}tbody tr:nth-child(even){background:rgba(28,47,59,.37)}tbody tr:last-child td{border-bottom:0}td{color:#d4e2e7}td:first-child{font-weight:550}
+pre{background:#051119;color:#d2f3eb;line-height:1.55;overflow-x:auto;font-size:12.5px;font-family:var(--mono);padding:18px 17px 20px;border:1px solid #2b5262;border-radius:10px;margin:20px 0;tab-size:2}pre code{font-family:inherit;font-size:inherit;white-space:pre} .code-wrap{position:relative}.copy-btn{position:absolute;top:7px;right:8px;border:1px solid #315761;color:#c8f7ec;background:#12303a;border-radius:6px;font-size:11px;padding:4px 10px;cursor:pointer}.copy-btn:hover{background:#1e4952}.foot{margin:55px 0 0;border-top:1px solid var(--border);padding-top:25px;font-size:12px;color:var(--soft)}.doc-tab ul.contains-task-list{list-style:none;padding-left:0}.task-list-item{list-style:none}.task-list-item input{accent-color:#52dfc8;margin-right:9px}
+@media(max-width:970px){.layout{display:block;padding:23px 25px 65px}.sidebar{display:none}.hero{padding:36px 25px 22px}.tabbar-inner{padding:0 25px}.doc-tab h2{font-size:21px}.head-link{display:none}}@media(max-width:500px){.hero h1{font-size:2.1rem}.tabbar-inner{padding:0 12px}.tab{font-size:12px;padding:15px 10px 12px}.layout{padding:12px 15px 50px}.stats{gap:5px}}@media print{*{color:#101b23!important;background:#fff!important;box-shadow:none!important}.topline,.tabbar,.sidebar,.copy-btn{display:none!important}.layout{display:block;padding:0}.hero{padding:0}.doc-tab{display:block!important;page-break-before:always}.doc-tab h2{break-after:avoid}.table-wrapper{overflow:visible}table{font-size:11px}pre{white-space:pre-wrap;word-break:break-word;border:1px solid #ccc}a{text-decoration:underline}}
+</style></head><body><div class="topline"></div>
+<header class="hero"><div class="eyebrow">AGL / v0.4 · Developer documentation</div><h1>From formal specification<br/>to a working reference checker</h1><p>Read the architecture, inspect the exact code-to-theory mapping, then run a reproducible Windows lab. This manual documents what the prototype validates—and just as importantly, what it cannot establish.</p><div class="stats"><span class="stat">2 guided tabs</span><span class="stat">41 defined symbols</span><span class="stat">11 regression tests</span><span class="stat">3 reproducible lab fixtures</span><span class="stat">0 live agent execution</span></div></header>
+<nav class="tabbar" aria-label="Documentation sections"><div class="tabbar-inner"><button class="tab" id="tab-concepts" role="tab" aria-controls="pane-concepts" aria-selected="true" data-go="concepts">01 · Architecture and theory mapping</button><button class="tab" id="tab-lab" role="tab" aria-controls="pane-lab" aria-selected="false" data-go="lab">02 · Windows onboarding lab</button><div class="split"></div><a class="head-link" href="AGL_v0.4.html" title="Full specification included in onboarding ZIP">Full specification ↗</a></div></nav>
+<div class="layout"><aside class="sidebar" aria-label="Contents"><div class="side-heading">On this tab</div><div class="toc-group" data-toc="concepts"><a href="#concepts-0" class="toc-link" data-section="concepts">Start with the mental model</a><a href="#concepts-1" class="toc-link" data-section="concepts">Seven-minute file orientation</a><a href="#concepts-2" class="toc-link" data-section="concepts">Mapping the theory to the code</a><a href="#concepts-3" class="toc-link" data-section="concepts">Read the contract in dependency order</a><a href="#concepts-4" class="toc-link" data-section="concepts">What the validator really does</a><a href="#concepts-5" class="toc-link" data-section="concepts">Why the tests matter—and what they cannot prove</a><a href="#concepts-6" class="toc-link" data-section="concepts">Reading order relative to the Full Technical Specification</a><a href="#concepts-7" class="toc-link" data-section="concepts">Current maturity assessment</a></div>
+<div class="toc-group" data-toc="lab"><a href="#lab-0" class="toc-link" data-section="lab">Before you start</a><a href="#lab-1" class="toc-link" data-section="lab">The starter directory</a><a href="#lab-2" class="toc-link" data-section="lab">Lab 1 — The valid contract</a><a href="#lab-3" class="toc-link" data-section="lab">Lab 2 — Learn from the tests, not merely from OK</a><a href="#lab-4" class="toc-link" data-section="lab">Lab 3 — Audit a legitimate recorded event sequence</a><a href="#lab-5" class="toc-link" data-section="lab">Lab 4 — Reproduce replay detection</a><a href="#lab-6" class="toc-link" data-section="lab">Lab 5 — Reproduce a contract-authority violation</a><a href="#lab-7" class="toc-link" data-section="lab">Lab 6 — Repair the invalid contract and test your own change</a><a href="#lab-8" class="toc-link" data-section="lab">How to create P1, P2 or P3 from the P4 specimen</a><a href="#lab-9" class="toc-link" data-section="lab">How to safely extend the reference implementation</a><a href="#lab-10" class="toc-link" data-section="lab">Troubleshooting</a><a href="#lab-11" class="toc-link" data-section="lab">Checklist: ready to progress beyond v0.4</a><a href="#lab-12" class="toc-link" data-section="lab">What&#x27;s next: the smallest useful v0.5 prototype</a></div><p style="margin-top:25px;color:var(--soft);font-size:11px">Reference checker ≠ deployed runtime. The guide preserves that distinction throughout.</p></aside><main><section class="doc-tab" id="pane-concepts" role="tabpanel" aria-labelledby="tab-concepts" data-pane="concepts" tabindex="0"><h1>Understanding the AGL v0.4 Reference Implementation</h1>
+<p><strong>Purpose.</strong> This guide explains what the downloadable reference package implements, how its files correspond to the AGL v0.4 <em>Full Technical Specification</em>, what its validator actually checks, and where theory still outruns code. The implementation is a <strong>preflight and retrospective audit prototype</strong>, not a Claude Code plugin, runtime orchestrator, or proof of agent safety.</p>
+<blockquote>
+<p><strong>Source boundaries.</strong> “Specification” means the companion <code>AGL_v0.4.html</code>. “Implementation” means the original six-file reference package examined for this guide. AGL is our proposed language, not an official Anthropic product. The architecture diagrams and interpretations in this guide are explanatory material, not screenshots or figures from Felix or Anthropic.</p>
+</blockquote>
+<h2 id="concepts-0">Start with the mental model</h2>
+<p>A coding agent normally receives a request and attempts to execute it. AGL instead separates four kinds of decisions that are often conflated:</p>
+<ol>
+<li><strong>What is worth attempting?</strong> Ambition <code>A</code> proposes stronger objectives, methods and investigatory directions.</li>
+<li><strong>What is now authorized?</strong> Governance <code>Γ</code> and the approved contract <code>κ</code> freeze the scope and resources.</li>
+<li><strong>How is bounded work completed?</strong> Goal <code>G</code> attempts authorized actions; verifier <code>V</code> assesses evidence.</li>
+<li><strong>What should happen later?</strong> Loop <code>L</code> observes changes and can take authorized responses, while strategic review <code>J</code> decides whether to reconsider objectives.</li>
+</ol>
+<p><strong>Conceptual lifecycle</strong></p>
+<pre><code class="language-text">Original problem ── A ──&gt; Proposed ambitions
+                              │
+                    governed selection (Γ)
+                              ▼
+                     Approved contract (κ)
+                              │
+                         G: execute
+                              │
+                         V: evaluate
+                              │
+                         L: observe
+                              │
+                       J: reconsider
+                    (if evidence warrants)
+</code></pre>
+<p>The Python package <strong>does not execute this lifecycle</strong>. It checks whether an abstract JSON description is structurally admissible, performs a few semantic cross-checks, and optionally inspects a <em>supplied</em> trace.</p>
+<h2 id="concepts-1">Seven-minute file orientation</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+<th>Read it when…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGL_v0.4.html</code></td>
+<td><strong>Normative conceptual report</strong>: operator definitions, type system, constraints, conditional safety argument</td>
+<td>You want to understand <em>why</em> a contract field exists; use sections 2–11</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Original project overview and basic commands</td>
+<td>You want the terse upstream package instructions</td>
+</tr>
+<tr>
+<td><code>symbols.json</code></td>
+<td>Registry of <strong>41 unique symbols</strong>, kinds, and meanings</td>
+<td>You see <code>Γ</code>, <code>κ</code>, <code>ρ_NV</code>, <code>P_κ</code> or another formal symbol and want its precise definition</td>
+</tr>
+<tr>
+<td><code>schema.json</code></td>
+<td>Draft 2020-12 JSON Schema; validates fields, types, enumerations and per-pattern presence</td>
+<td>You need to know which JSON keys are permitted or required</td>
+</tr>
+<tr>
+<td><code>abstract_valid_spec.json</code></td>
+<td>Valid, deliberately <strong>domain-neutral P4</strong> specimen</td>
+<td>You need a starting specification to modify safely</td>
+</tr>
+<tr>
+<td><code>validate_agl.py</code></td>
+<td>Structural + semantic validator; optional historical event-trace auditor</td>
+<td>You want to see exactly which constraints the code checks</td>
+</tr>
+<tr>
+<td><code>test_validator.py</code></td>
+<td>Eleven positive/negative regression tests for the checker</td>
+<td>You want executable proof that the checker catches a set of known bad inputs</td>
+</tr>
+</tbody>
+</table>
+<p>The starter kit adds <code>labs/trace_pass.json</code>, <code>labs/trace_fail_replay.json</code>, and <code>labs/spec_fail_scope.json</code>. These <strong>are documentation exercise files</strong>, not components of the original reference ZIP.</p>
+<h2 id="concepts-2">Mapping the theory to the code</h2>
+<p>The specification is broader than the validator. Read this as a <em>traceability matrix</em>—a conceptual property does not become implemented merely because a JSON field names it.</p>
+<table>
+<thead>
+<tr>
+<th>Full specification</th>
+<th>JSON location</th>
+<th>What is checked today?</th>
+<th>Not yet implemented</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§2: single symbol namespace</td>
+<td><code>symbols.json</code></td>
+<td>Registry supplies 41 definitions</td>
+<td>No automatic type-checking of every mathematical expression</td>
+</tr>
+<tr>
+<td>§3: typed, governed composition</td>
+<td><code>pattern</code>, <code>contract</code>, <code>governance</code></td>
+<td>Required operators by pattern; frozen/approved flags; approver match</td>
+<td>Actual approval authenticity or a workflow executor</td>
+</tr>
+<tr>
+<td>§4.1: Speed <code>S</code></td>
+<td><code>ambition.S.cost_S</code>, <code>quality_floor</code>, <code>same_outcome_constraint</code></td>
+<td>Required fields; nonempty constraints</td>
+<td>Computing optimal plans or checking real outcome equivalence</td>
+</tr>
+<tr>
+<td>§4.2: Altitude <code>H</code></td>
+<td><code>ambition.H</code></td>
+<td>Required fields and types</td>
+<td>Automatically discovering or ranking higher-level objectives</td>
+</tr>
+<tr>
+<td>§4.3: Depth <code>D</code></td>
+<td><code>ambition.D.discovery</code></td>
+<td>Presence of surprise, hypothesis, experiment, evidence and revision declarations</td>
+<td>Real discovery, hypothesis validation, novelty search</td>
+</tr>
+<tr>
+<td>§4.4: Range <code>R</code></td>
+<td><code>ambition.R.verbify</code>, <code>discipline_discovery.input_ref</code></td>
+<td>Functional output nonempty; discipline search points to verbification output</td>
+<td>Actual semantic noun-to-verb transformation or transfer-quality assessment</td>
+</tr>
+<tr>
+<td>§5: Goal <code>G</code></td>
+<td><code>goal</code>, <code>contract</code></td>
+<td>Contract reference, permitted-method subset, budgets, evaluator reference</td>
+<td>Goal execution and actual completion proof</td>
+</tr>
+<tr>
+<td>§5: independent verification</td>
+<td><code>goal.evaluator_ref</code>, <code>verifier</code></td>
+<td>Reference equality; evaluator/executor IDs differ; valid verdict labels</td>
+<td>Proving evaluator independence, running tests or verifying provenance</td>
+</tr>
+<tr>
+<td>§6: Loop <code>L</code></td>
+<td><code>loop</code></td>
+<td>Timing consistency; <code>NO_OP</code> on no-change; scope and caps; declared guards</td>
+<td>Scheduler, event subscriber, durable ledger, runtime guard implementation</td>
+</tr>
+<tr>
+<td>§6: replay and continuity</td>
+<td><code>loop.safety</code>, optional <code>--trace</code></td>
+<td>Detects repeated recorded effect IDs, nonmonotonic recorded checkpoints</td>
+<td>Exactly-once side effects, authentic event recording, atomic commits</td>
+</tr>
+<tr>
+<td>§7: P1–P4 compositions</td>
+<td><code>pattern</code> + conditional schema rules</td>
+<td>Conditional presence constraints</td>
+<td>Runtime orchestration; strict prohibition of unused extra operators</td>
+</tr>
+<tr>
+<td>§9: conditional soundness</td>
+<td><code>loop.enforcement</code> and stated assumptions</td>
+<td>Guard <strong>names</strong> must be declared</td>
+<td>Proving trusted guards work and capture all effects</td>
+</tr>
+<tr>
+<td>§10: epistemic progress</td>
+<td><code>ambition.D.discovery</code></td>
+<td>Shape of a proposed discovery process</td>
+<td>Empirical generalization or genuine scientific novelty</td>
+</tr>
+</tbody>
+</table>
+<h3>Pattern requirements actually encoded</h3>
+<p>The schema's <code>allOf</code> conditions require these components:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Required operators/objects</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>P1</code></td>
+<td><code>ambition</code>, <code>goal</code>, <code>contract</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Ambition → committed goal → verification</td>
+</tr>
+<tr>
+<td><code>P2</code></td>
+<td><code>ambition</code>, <code>loop</code>, <code>contract</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Opportunity discovery, governed by a discovery charter</td>
+</tr>
+<tr>
+<td><code>P3</code></td>
+<td><code>goal</code>, <code>loop</code>, <code>contract</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Bounded delivery followed by monitored feedback</td>
+</tr>
+<tr>
+<td><code>P4</code></td>
+<td><code>ambition</code>, <code>goal</code>, <code>loop</code>, <code>contract</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Full governed improvement cycle</td>
+</tr>
+</tbody>
+</table>
+<p><code>agl_version</code> and <code>pattern</code> are always required. The checker <strong>does not forbid additional operator objects</strong> outside the minimal requirements. It is not yet a full typed compiler.</p>
+<h2 id="concepts-3">Read the contract in dependency order</h2>
+<p>Do not start by editing <code>loop.safety</code> or the ambition prose in isolation. First understand the references:</p>
+<pre><code class="language-text">                       governance.permission_scope
+                                   │
+               ┌───────────────────┘
+               ▼
+        contract.authorized_actions
+             │                │
+             ▼                ▼
+goal.execution_policy...  loop.response.authorized_actions
+
+contract.id ───────────&gt; goal.contract_ref
+       └───────────────&gt; loop.contract_ref
+       └───────────────&gt; loop.safety.scope.approved_contract_ref
+
+verifier.id ───────────&gt; goal.evaluator_ref
+</code></pre>
+<p>The validator checks those references and set-inclusion relationships. This is why changing one field often requires reconciling related fields. A contract is a deliberately <em>frozen target</em> while a given goal runs; proposal generation and contract selection are separate.</p>
+<h3>Interpreting the P4 specimen</h3>
+<p>The provided specimen is a deliberately bland P4 configuration. It sets a contract ID of <code>contract-alpha</code>, authorizes <code>read</code> and <code>propose</code>, gives <code>G</code> a money cap of <code>10</code>, reserves a Loop cumulative cap of <code>20</code>, and sets a governance total cap of <code>30</code>.</p>
+<p>Those values are <strong>synthetic test data</strong>, not recommended prices, permissions, or defaults for a real project. A schema-valid specimen is not automatically a desirable or production-safe contract.</p>
+<h2 id="concepts-4">What the validator really does</h2>
+<h3>Layer 1 — Structural/schema checks</h3>
+<p><code>jsonschema.Draft202012Validator</code> checks required keys, types, allowed values, object structures, and pattern-dependent operator presence. This includes requiring all four ambition dimensions when <code>ambition</code> exists.</p>
+<h3>Layer 2 — Cross-field static semantics</h3>
+<p><code>validate_static()</code> verifies the contract is marked approved/frozen, the approver string agrees with governance, action scopes are subsets of authorized scopes, goal/loop/verifier references match, evaluator ID differs from executor ID, and declared resource ceilings fit within the declared governance cap.</p>
+<p>A few distinctive rules in the current code:</p>
+<ul>
+<li>Fixed loop intervals must be <strong>at least 60 seconds</strong>; adaptive/event modes must omit <code>interval_seconds</code>.</li>
+<li>Loop's <code>no_change</code> policy must be <code>NO_OP</code>.</li>
+<li>Four guard <strong>names</strong> must be present: <code>authorization</code>, <code>lease</code>, <code>budget</code>, <code>dedupe</code>.</li>
+<li>Goal <code>max_money</code> plus Loop cumulative <code>money_limit</code> may not exceed the governance <code>max_money_total</code> value.</li>
+<li>The verifier must advertise the distinct verdict labels <code>PASS</code>, <code>FAIL</code>, and <code>INCONCLUSIVE</code>.</li>
+</ul>
+<p><strong>These checks validate declarations and relationships.</strong> They neither run the actual guards nor authenticate approvers. The current checker also does not assert, for example, that the free-text <code>goal.objective</code> equals <code>contract.objective</code>.</p>
+<h3>Layer 3 — Optional recorded-trace audit</h3>
+<p><code>validate_trace()</code> accepts a <strong>JSON array</strong> of historical records with kinds <code>observation</code>, <code>action</code>, and <code>checkpoint</code>. It checks the observed action names, contract ID, <code>authorization_checked</code> flag, nonempty lease reference, prior observed event, effect identity, recorded spending and checkpoint order.</p>
+<p>Crucially, <code>authorization_checked: true</code> is a claim <strong>in the log</strong>. The tool cannot establish that authorization happened in reality. A <code>lease_id</code> string is not proof of an actual distributed lock. Likewise, a <code>PASS</code> proves only that the supplied data passed the checker.</p>
+<p><strong>Format trap:</strong> The abstract <code>loop.output.evidence_log</code> names <code>evidence/log.jsonl</code>, but the implemented CLI uses <code>json.loads()</code> on the entire <code>--trace</code> file. For the current checker, supply <strong>one JSON array</strong>, not newline-delimited JSONL.</p>
+<h3>Layer 4 — Real runtime enforcement (not included)</h3>
+<p>A working AGL orchestrator would need actual pre-action permission checks, provider-aware idempotency, durable transactional state, concurrency control, resource accounting, reproducible tests and trustable evidence provenance.</p>
+<h3>Layer 5 — Scientific validity (not included)</h3>
+<p>Neither schema validation nor trace auditing verifies empirical truth, causal claims or novelty. The Depth discovery fields define an <em>intended method</em>, not the fact of a scientific discovery.</p>
+<h2 id="concepts-5">Why the tests matter—and what they cannot prove</h2>
+<p>The eleven tests exercise both acceptance and rejection paths: valid specimen, missing noun-to-verb field, missing discovery mechanism, evaluator identity collision, scope escalation, insufficient budget, missing guard declaration, short fixed interval, valid trace, duplicate effect ID, and descending checkpoint version.</p>
+<p>A green test suite means <strong>those specific checks worked for those test fixtures</strong>. It does not establish exhaustive schema soundness, correct behavior of all untested inputs, or end-to-end safety.</p>
+<h2 id="concepts-6">Reading order relative to the Full Technical Specification</h2>
+<p>For an efficient first pass, read <strong>Full Spec §0–3 → this guide → Full Spec §4–7 → the hands-on tab → Full Spec §8–11</strong>. The reference code makes more sense after understanding why ambition proposals, approved contracts, evidence, evaluation, and loop state are separate objects.</p>
+<h2 id="concepts-7">Current maturity assessment</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Formal vocabulary and operator contracts</td>
+<td><strong>Specified</strong></td>
+</tr>
+<tr>
+<td>JSON structure + selected static refinements</td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Selected historical event-trace consistency checks</td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Actual <code>/be-ambitious</code>, <code>/goal</code>, <code>/loop</code> orchestration</td>
+<td><strong>Not implemented</strong></td>
+</tr>
+<tr>
+<td>Enforced authorization, atomicity, replay protection</td>
+<td><strong>Not implemented</strong></td>
+</tr>
+<tr>
+<td>Trusted independent validation of real artifacts</td>
+<td><strong>Not implemented</strong></td>
+</tr>
+<tr>
+<td>End-to-end soundness or scientific-discovery proof</td>
+<td><strong>Not established</strong></td>
+</tr>
+</tbody>
+</table>
+<p>This boundary is deliberate. v0.4's genuine deliverable is an inspectable contract and checker—a foundation on which a future runtime could be built, rather than a runtime dressed up as a specification.</p>
+</section><section class="doc-tab" id="pane-lab" role="tabpanel" aria-labelledby="tab-lab" data-pane="lab" tabindex="0"><h1>Hands-on Onboarding: Install, Validate, Break, Repair</h1>
+<p><strong>Learning objective:</strong> By the end of this lab, you will be able to inspect a valid AGL contract, run the static validator, reproduce a passing and failing trace audit, explain the failure reports, and safely modify a contract without accidentally crossing its governance boundaries.</p>
+<p>This is a <strong>reference-specification lab</strong>. None of the commands launches Claude, schedules a loop, connects to GitHub, spends money, or changes production software.</p>
+<h2 id="lab-0">Before you start</h2>
+<p><strong>Requirements:</strong> Windows 10/11, PowerShell, Python 3.10 or newer, and an internet connection for the first <code>jsonschema</code> installation. No Microsoft Office or Claude subscription is required for these exercises. An editor such as VS Code helps with reading JSON but is optional.</p>
+<p>The downloadable <strong>Onboarding Kit</strong> contains the full v0.4 specification, the original reference validator and schema, an improved 11-test regression suite, the learning-oriented <code>lab2_explained.py</code> runner, this manual, and three lab fixtures. This is a <strong>documentation/lab improvement within AGL v0.4</strong>; it does not change the formal specification or the validator rules.</p>
+<h3>Quick start: PowerShell without activation-policy issues</h3>
+<p>Run the following commands from PowerShell. The <code>py -3</code> launcher is standard on many Windows Python installations; replace it with <code>python</code> if your system lacks <code>py</code>.</p>
+<pre><code class="language-powershell">$zip = "$env:USERPROFILE\Downloads\AGL_v0.4_Onboarding_Kit.zip"
+$dest = "$env:USERPROFILE\Downloads\AGL-v0.4-lab"
+Expand-Archive -LiteralPath $zip -DestinationPath $dest -Force
+Set-Location "$dest\agl_v0_4_starter"
+
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install jsonschema
+.\.venv\Scripts\python.exe validate_agl.py abstract_valid_spec.json
+.\.venv\Scripts\python.exe -m unittest -v test_validator.py
+</code></pre>
+<p>Because these commands call the virtual environment's interpreter explicitly, you <strong>do not need to activate</strong> the environment or change the PowerShell execution policy.</p>
+<p>You should see a PASS from the validator and an eleven-test summary ending in <code>OK</code>. The actual installation output from pip may vary.</p>
+<p><strong>Safety:</strong> The command <code>Expand-Archive -Force</code> writes into the specified lab folder. Use a fresh directory if you want to preserve a previous experiment.</p>
+<h2 id="lab-1">The starter directory</h2>
+<pre><code class="language-text">agl_v0_4_starter/
+├── AGL_v0.4.html                 ← full conceptual specification
+├── ONBOARDING.html               ← this two-tab guide
+├── README.md                     ← original reference README
+├── symbols.json                  ← 41 unique formal definitions
+├── schema.json                   ← Draft 2020-12 contract shape
+├── abstract_valid_spec.json      ← original valid P4 contract
+├── validate_agl.py               ← validator + historical trace auditor
+├── test_validator.py             ← 11 regression tests (2 assertions strengthened)
+├── lab2_explained.py             ← interactive explanatory Lab 2 runner
+└── labs/
+    ├── trace_pass.json           ← expected valid event history
+    ├── trace_fail_replay.json    ← deliberate duplicate effect
+    └── spec_fail_scope.json      ← deliberate scope escalation
+</code></pre>
+<p>The validator, schema, symbol registry, and valid contract are the original v0.4 reference artifacts. The test file has two more specific assertions, and the explanatory runner, manual, and lab fixtures are educational additions. No live orchestration capability has been added.</p>
+<h2 id="lab-2">Lab 1 — The valid contract</h2>
+<p><strong>Command:</strong></p>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe validate_agl.py abstract_valid_spec.json
+</code></pre>
+<p><strong>Expected output:</strong></p>
+<pre><code class="language-text">PASS: reference schema and semantic checks.
+LIMIT: PASS does not prove execution safety, evaluator soundness, or evidence authenticity.
+</code></pre>
+<p><strong>Interpretation:</strong> The declared data satisfies the JSON Schema and the subset of cross-field consistency rules implemented in <code>validate_static()</code>. It does not mean that the ambition is worthwhile, permissions are real, a goal was executed, or safety was proven.</p>
+<h3>Follow the key references manually</h3>
+<p>Open <code>abstract_valid_spec.json</code> and confirm:</p>
+<ul>
+<li><code>pattern</code> is <code>P4</code>, so all of <code>ambition</code>, <code>contract</code>, <code>goal</code>, and <code>loop</code> are required.</li>
+<li><code>contract.id</code> is <code>contract-alpha</code>; both <code>goal.contract_ref</code> and <code>loop.contract_ref</code> refer to that ID.</li>
+<li><code>goal.evaluator_ref</code> matches <code>verifier.id</code>.</li>
+<li><code>goal.executor_id</code> is different from <code>verifier.runner_id</code>.</li>
+<li>The allowed actions flow downward: governance → contract → goal/loop.</li>
+<li>Reserved money maxima reconcile: <code>10</code> (Goal) + <code>20</code> (Loop cumulative) = <code>30</code> (Governance overall cap).</li>
+</ul>
+<p>The validator checks these particular equalities and inclusions; it doesn't validate the economic reasonableness of those numbers.</p>
+<h2 id="lab-3">Lab 2 — Learn from the tests, not merely from <code>OK</code></h2>
+<p>The ordinary unit-test runner is useful for maintaining code, but <strong><code>Ran 11 tests ... OK</code> explains almost nothing about AGL</strong>. This lab now has a second, teaching-oriented runner that demonstrates the actual rule tested by each mutation.</p>
+<h3>2A. Run the educational tour</h3>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe lab2_explained.py
+</code></pre>
+<p>Every case reports <strong>specification section → rule → deliberate change → expected result → actual diagnostic → learning</strong>. A deliberately invalid configuration must be rejected, so the pattern <code>EXPECT: FAIL / ACTUAL: FAIL / TEST: PASS</code> is a successful test.</p>
+<p><strong>A representative output (Case 5):</strong></p>
+<pre><code class="language-text">CASE 05 / 11 | No authority escalation | SPEC sections 3, 6.2, 8
+RULE:   Loop actions must be a subset of approved contract actions.
+CHANGE: Add delete-production to loop.response.authorized_actions.
+EXPECT: FAIL (must mention authorization)
+ACTUAL: FAIL
+DIAGNOSTIC: LOOP: response exceeds contract authorization
+TEST:   PASS - expected behavior confirmed
+LEARN:  The checker rejects declared Loop scope escalation.
+</code></pre>
+<p>Read this as a miniature experimental method: state a proposition, make a controlled intervention, predict the consequence, observe the validator, and bound the conclusion. <strong>It does not show that a real Claude process would be unable to call a forbidden tool.</strong></p>
+<h3>2B. Choose one experiment and inspect its limits</h3>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe lab2_explained.py --list
+.\.venv\Scripts\python.exe lab2_explained.py --case 10
+</code></pre>
+<p><code>--case 10</code> includes this crucial limitation:</p>
+<pre><code class="language-text">LIMIT: This does not prevent an API from performing the same effect twice.
+</code></pre>
+<p>This distinction is foundational: <em>static and historical evidence checking</em> is not the same as <em>runtime enforcement</em>.</p>
+<h3>2C. Predict before observing (interactive mode)</h3>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe lab2_explained.py --guided
+</code></pre>
+<p>For each case, the runner states the rule and the mutation, then asks:</p>
+<pre><code class="language-text">PREDICT checker verdict [PASS/FAIL]:
+</code></pre>
+<p>Enter <code>PASS</code> or <code>FAIL</code> (or press Enter to skip). It then shows the actual result, diagnostic, interpretation, and limitation. <strong>Prediction → observation → explanation</strong> is the primary learning mode.</p>
+<h3>The 11 experiments and their exact theoretical connections</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Controlled experiment</th>
+<th>Expected checker verdict</th>
+<th>Full Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Keep the reference contract unchanged</td>
+<td>PASS</td>
+<td>§§3, 7, 8 — contract and static checking</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Delete <code>ambition.R.verbify</code></td>
+<td>FAIL</td>
+<td>§4.4 — noun-to-verb transformation</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Delete <code>ambition.D.discovery.surprise_detector</code></td>
+<td>FAIL</td>
+<td>§§4.3, 10 — discovery and epistemic progress</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Make evaluator and executor identities equal</td>
+<td>FAIL</td>
+<td>§§5.1, 9 — separate verifier and executor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Add unauthorized <code>delete-production</code> to Loop actions</td>
+<td>FAIL</td>
+<td>§§3, 6.2 — authority preservation</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Reduce overall money cap below declared reservations</td>
+<td>FAIL</td>
+<td>§§3, 6.2 — budget consistency</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Remove declaration of the <code>dedupe</code> guard</td>
+<td>FAIL</td>
+<td>§§6.2, 8 — required guard declarations</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Set a fixed interval below the checker minimum</td>
+<td>FAIL</td>
+<td>§§6.3, 8 — timing policy</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Supply observation, action, and increasing checkpoint</td>
+<td>PASS</td>
+<td>§6.1 — operational sequence</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Repeat an <code>effect_id</code> in a recorded trace</td>
+<td>FAIL</td>
+<td>§6.2 — idempotency evidence</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Make checkpoint version decrease from 3 to 2</td>
+<td>FAIL</td>
+<td>§§6.1–6.2 — continuity evidence</td>
+</tr>
+</tbody>
+</table>
+<h3>2D. Keep the conventional unit tests too</h3>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe -m unittest -v test_validator.py
+</code></pre>
+<p>These remain the automated regression suite. Two assertions have been strengthened: tests 2 and 3 now demand diagnostics referring to the <strong>specific missing field</strong> instead of accepting any error whatsoever. The expected summary is still <code>Ran 11 tests ... OK</code>, but you should now understand the proposition behind each result.</p>
+<p><strong>What this lab does not prove:</strong> that the claimed scientific discovery methods are substantive, that declared permissions are enforced at tool-call time, that log evidence is authentic/exhaustive, or that observed checkpoints correspond to atomic durable storage. Those are separate research and runtime obligations for later versions.</p>
+<h2 id="lab-4">Lab 3 — Audit a legitimate recorded event sequence</h2>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe validate_agl.py abstract_valid_spec.json --trace labs\trace_pass.json
+</code></pre>
+<p><strong>Expected:</strong></p>
+<pre><code class="language-text">PASS: reference schema and semantic checks plus supplied-trace audit.
+LIMIT: PASS does not prove execution safety, evaluator soundness, or evidence authenticity.
+</code></pre>
+<p>The event sequence is a JSON <strong>array</strong>:</p>
+<pre><code class="language-json">[
+  {"kind": "observation", "event_id": "event-1"},
+  {"kind": "action", "event_id": "event-1", "effect_id": "effect-1",
+   "name": "propose", "authorization_checked": true,
+   "lease_id": "lease-1", "contract_id": "contract-alpha",
+   "run_id": "run-1", "money_cost": 0.2},
+  {"kind": "checkpoint", "version": 1}
+]
+</code></pre>
+<p>The auditor sees an observed event, an authorized-by-declaration action referencing that event, and a monotonically advancing checkpoint. It does not prove that the external action took place or that a real lease existed.</p>
+<p><strong>Subtle format distinction:</strong> This implementation expects a JSON array file for <code>--trace</code>. A newline-delimited JSONL file mentioned in the abstract contract is <strong>not</strong> accepted by the CLI without conversion.</p>
+<h2 id="lab-5">Lab 4 — Reproduce replay detection</h2>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe validate_agl.py abstract_valid_spec.json --trace labs\trace_fail_replay.json
+$LASTEXITCODE
+</code></pre>
+<p><strong>Expected:</strong></p>
+<pre><code class="language-text">FAIL: TRACE[2]: repeated effect_id effect-1
+1
+</code></pre>
+<p>This fixture repeats the same consequential effect identity. The checker reports it and exits with code <code>1</code>. The <code>1</code> is <strong>expected</strong> in a negative test; it means the invalid trace was rejected correctly.</p>
+<p><strong>What this proves:</strong> A duplicate <code>effect_id</code> <em>present in this trace</em> can be detected.</p>
+<p><strong>What it does not prove:</strong> Duplicate real-world effects cannot happen, or that omitted/forged log records are detected. The external service and transaction ledger would need to enforce stronger guarantees.</p>
+<h2 id="lab-6">Lab 5 — Reproduce a contract-authority violation</h2>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe validate_agl.py labs\spec_fail_scope.json
+$LASTEXITCODE
+</code></pre>
+<p><strong>Expected:</strong></p>
+<pre><code class="language-text">FAIL: LOOP: response exceeds contract authorization
+1
+</code></pre>
+<p>The deliberately invalid specimen adds <code>delete-production</code> to <code>loop.response.authorized_actions</code> while <code>contract.authorized_actions</code> still permits only <code>read</code> and <code>propose</code>.</p>
+<p>The validator correctly rejects the escalation. This is a <strong>static scope check</strong>, not a runtime access-control system: an actual agent's tool permissions must still be enforced by the host.</p>
+<h2 id="lab-7">Lab 6 — Repair the invalid contract and test your own change</h2>
+<p>Work on a <strong>copy</strong> of the original JSON specimen, not the baseline fixture.</p>
+<pre><code class="language-powershell">Copy-Item abstract_valid_spec.json labs\my_first_spec.json
+code labs\my_first_spec.json
+</code></pre>
+<p>If <code>code</code> is unavailable, open the file in another editor. Modify the <code>ambition.H.ultimate_goal</code> string so that it clearly states an outcome rather than an isolated action. You can also change <code>ambition.R.verbify.output</code> to a more precise observable function; do <strong>not</strong> remove its fields or change <code>discipline_discovery.input_ref</code>.</p>
+<p>Then validate:</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe validate_agl.py labs\my_first_spec.json
+</code></pre>
+<p>The result should still PASS if you changed only those required, nonempty descriptive strings. This teaches a vital limitation: <strong>semantic quality is not validated</strong>. The reference checker ensures a <code>VERBIFY</code> result exists and is wired to discipline discovery; it cannot judge whether you have formulated a genuinely better functional objective.</p>
+<h3>Controlled failure: remove a required discovery component</h3>
+<p>In your copy, delete the <code>ambition.D.discovery.surprise_detector</code> key. Rerun the validator. You should see a schema failure identifying a missing required property. Restore the key and validate again.</p>
+<p>This is the most direct demonstration of the distinction between <em>expressing a theoretical requirement in a schema</em> and <em>actually implementing a scientific discovery algorithm</em>.</p>
+<h2 id="lab-8">How to create P1, P2 or P3 from the P4 specimen</h2>
+<p>The current <code>abstract_valid_spec.json</code> is a complete P4 starting point. If you need another pattern, create a copy and adjust <code>pattern</code> together with the operators—not just the pattern label.</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Necessary entries</th>
+<th>Sensible edits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td><code>ambition</code>, <code>contract</code>, <code>goal</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Remove <code>loop</code>; adjust the governance cap to cover the goal budget</td>
+</tr>
+<tr>
+<td>P2</td>
+<td><code>ambition</code>, <code>contract</code>, <code>loop</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Remove <code>goal</code>; approve a bounded discovery <strong>charter</strong> rather than autonomous implementation</td>
+</tr>
+<tr>
+<td>P3</td>
+<td><code>contract</code>, <code>goal</code>, <code>loop</code>, <code>verifier</code>, <code>governance</code></td>
+<td>Remove <code>ambition</code>; assume the goal and scope were already selected</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>All of the above</td>
+<td>Preserve all operators but keep strategic review separate from iteration-level execution</td>
+</tr>
+</tbody>
+</table>
+<p>These are conceptual minimal sets enforced by the schema's conditional presence rules. The schema <strong>may still admit extra operators</strong> and does not execute the transitions implied by the <code>pattern</code> label.</p>
+<h2 id="lab-9">How to safely extend the reference implementation</h2>
+<p>A recommended contributor workflow is:</p>
+<ol>
+<li>Modify <code>schema.json</code> if you're changing syntax or required fields.</li>
+<li>Modify <code>validate_agl.py</code> if you're introducing cross-field constraints or stronger trace checks.</li>
+<li>Add at least one accepting test and one rejecting test to <code>test_validator.py</code>.</li>
+<li>Update <code>symbols.json</code> if you introduce formal notation; do not assign an existing symbol a second meaning.</li>
+<li>Update the corresponding section of <code>AGL_v0.4.html</code> and the documentation crosswalk.</li>
+<li>Rerun the validator and all eleven original tests, plus any new tests.</li>
+</ol>
+<p><strong>Extension priorities:</strong> Check <code>goal.objective</code> against the contract's intended result; add schema-level rule consistency for unusual pattern combinations; specify machine-readable budgets and measurements; validate evidence schemas; introduce a <em>separate runtime</em> that enforces side-effect authorization before tool calls. Each step should have explicit tests and a stated trust boundary.</p>
+<h2 id="lab-10">Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'py' is not recognized</code></td>
+<td>Python launcher missing</td>
+<td>Use <code>python -m venv .venv</code> or install Python 3.10+</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError: jsonschema</code></td>
+<td>Dependency not installed into the interpreter in use</td>
+<td>Run <code>.\.venv\Scripts\python.exe -m pip install jsonschema</code> from the lab root</td>
+</tr>
+<tr>
+<td><code>FileNotFoundError: schema.json</code></td>
+<td>Reference script moved away from adjacent schema</td>
+<td>Keep <code>validate_agl.py</code> and <code>schema.json</code> together; script resolves its own directory</td>
+</tr>
+<tr>
+<td><code>error: unrecognized arguments: ...</code></td>
+<td>Incorrect CLI order or switch</td>
+<td>Use <code>python validate_agl.py SPEC [--trace TRACE_JSON_ARRAY]</code></td>
+</tr>
+<tr>
+<td><code>JSONDecodeError: Extra data</code></td>
+<td>JSONL supplied instead of one array</td>
+<td>Convert trace records into a valid JSON array</td>
+</tr>
+<tr>
+<td><code>FAIL: GOAL: contract reference does not resolve</code></td>
+<td>Inconsistent contract IDs</td>
+<td>Make <code>goal.contract_ref</code> equal <code>contract.id</code></td>
+</tr>
+<tr>
+<td><code>FAIL: INDEPENDENCE: ...</code></td>
+<td>Executor and verifier runner IDs equal</td>
+<td>Give them distinct IDs <strong>and separately enforce actual independence</strong></td>
+</tr>
+<tr>
+<td><code>FAIL: BUDGET: ...</code></td>
+<td>Reserved Goal + Loop amounts exceed declared governance cap</td>
+<td>Adjust limits coherently; don't simply inflate the budget without review</td>
+</tr>
+<tr>
+<td><code>FAIL: ENFORCEMENT: ...</code></td>
+<td>Required runtime guard <strong>declaration</strong> absent</td>
+<td>Declare the four guard names; implementing their actual behavior is a separate task</td>
+</tr>
+<tr>
+<td>Negative lab exits with status <code>1</code></td>
+<td>Intentionally invalid fixture</td>
+<td>Correct outcome: rejection was demonstrated</td>
+</tr>
+<tr>
+<td>PowerShell blocks <code>Activate.ps1</code></td>
+<td>Activation-policy restriction</td>
+<td>Use <code>.\.venv\Scripts\python.exe</code> directly; no activation required</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lab-11">Checklist: ready to progress beyond v0.4</h2>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>The valid P4 specimen passes structural and semantic checks.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>All eleven regression tests pass.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>A valid recorded trace passes the auditor.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>A replayed <code>effect_id</code> and an unauthorized action are each rejected.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>You can explain why a declared guard is not an enforced guard.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>You can identify which Full Specification section defines each contract field.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>You can distinguish native Claude <code>/goal</code> or <code>/loop</code> behavior from this reference package's capabilities.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" disabled="" type="checkbox"/>You can define a concrete v0.5 runtime obligation without claiming v0.4 already implements it.</li>
+</ul>
+<h2 id="lab-12">What's next: the smallest useful v0.5 prototype</h2>
+<p>Do not start by wiring three slash commands together. First build an <strong>admission controller</strong> that checks a real proposed action against a trusted policy, allocates a bounded resource reservation, and persists an effect identity before allowing the action to reach an external tool. Then test crash/retry paths and independent evidence capture.</p>
+<p>The central research question is whether <em>well-formed specification + trustworthy runtime guards + credible external verification</em> is sufficient to support a narrow, conditional safety guarantee. v0.4 documents those conditions; it does not yet satisfy them.</p>
+</section><div class="foot">AGL v0.4 · Companion documentation based on the actual reference package · Self-contained HTML · Offline after download</div></main></div>
+<script>
+(function(){
+const tabs=[...document.querySelectorAll('.tab')],panes=[...document.querySelectorAll('.doc-tab')],tocs=[...document.querySelectorAll('.toc-group')];
+function changeTab(id,updateHash=true){if(!['concepts','lab'].includes(id))return;tabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.go===id)));panes.forEach(p=>p.classList.toggle('active',p.dataset.pane===id));tocs.forEach(t=>t.hidden=t.dataset.toc!==id);if(updateHash){history.replaceState(null,'','#'+id);window.scrollTo({top:0,behavior:'smooth'})} }
+tabs.forEach(t=>t.addEventListener('click',()=>changeTab(t.dataset.go)));
+const hash=location.hash.slice(1);const selected=hash.startsWith('lab')?'lab':'concepts';changeTab(selected,false);
+document.querySelectorAll('.toc-link').forEach(link=>link.addEventListener('click',()=>{const group=link.dataset.section;if(group)changeTab(group,false);document.querySelectorAll('.toc-link').forEach(n=>n.classList.remove('active'));link.classList.add('active')}));
+document.querySelectorAll('.doc-tab table').forEach(table=>{const wrap=document.createElement('div');wrap.className='table-wrapper';table.parentNode.insertBefore(wrap,table);wrap.appendChild(table)});
+document.querySelectorAll('pre').forEach(pre=>{const wrap=document.createElement('div');wrap.className='code-wrap';pre.parentNode.insertBefore(wrap,pre);wrap.appendChild(pre);const b=document.createElement('button');b.className='copy-btn';b.type='button';b.textContent='Copy';b.setAttribute('aria-label','Copy code');b.addEventListener('click',async()=>{const txt=pre.innerText;try{await navigator.clipboard.writeText(txt);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1600)}catch(e){const rng=document.createRange();rng.selectNodeContents(pre);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(rng);b.textContent='Select & copy'}});wrap.appendChild(b)});
+})();
+</script></body></html>

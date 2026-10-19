@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>AGL v0.4 — Typed Specification and Validator</title><style>
+:root{color-scheme:dark;--bg:#0a101a;--nav:#0d1522;--surface:#101d2b;--panel:#132338;--line:#26384e;--fg:#eaf1f7;--muted:#a8b9ca;--accent:#5bd0b7;--accent2:#91acf5;--amber:#eac77f;--red:#f5a2a7;--code:#0c1522}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;background:var(--bg);color:var(--fg)}a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}button,input{font:inherit}button{cursor:pointer}.shell{display:grid;grid-template-columns:258px minmax(0,1fr);max-width:1680px;margin:0 auto;min-height:100vh}.sidebar{background:var(--nav);border-right:1px solid var(--line);padding:26px 22px;position:sticky;top:0;height:100vh;overflow-y:auto}.brand{font-weight:850;letter-spacing:.07em;font-size:22px;color:var(--accent);margin-bottom:5px}.brand-sub{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}.sideline{border-top:1px solid var(--line);margin:22px 0}.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:#7899ae;margin:20px 0 8px}.sidebar a{display:block;font-size:13px;color:#b4c9d9;padding:7px 10px;border-radius:7px}.sidebar a:hover,.sidebar a.active{background:#1c3045;color:#f7ffff;text-decoration:none}.main{min-width:0;padding:0 42px 100px}.content{max-width:1050px;margin:auto}.hero{padding:62px 0 45px;border-bottom:1px solid var(--line)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);font-weight:650}.hero h1{font-size:clamp(32px,4.5vw,62px);letter-spacing:-.055em;line-height:1.1;margin:15px 0 22px}.lead{font-size:19px;color:#c6d4df;max-width:800px;line-height:1.65}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.chip{font-size:12px;border:1px solid #365569;background:#12273a;padding:4px 11px;border-radius:24px;color:#c1dce2}.section{padding-top:55px;scroll-margin-top:20px}.section h2{font-size:clamp(24px,3vw,34px);letter-spacing:-.035em;line-height:1.3;margin:0 0 18px}.section h3{margin:35px 0 10px;font-size:20px;letter-spacing:-.02em}.section h4{margin:23px 0 8px;font-size:16px}.section p{margin:12px 0;color:#d7e3eb}.section strong{color:#fff}.muted{color:var(--muted)}.highlight{color:var(--accent)}.panel{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:20px 24px;margin:22px 0}.panel.warn{border-left:3px solid var(--amber)}.panel.good{border-left:3px solid var(--accent)}.panel h3{margin-top:0}.subtitle{font-size:13px;color:var(--muted);letter-spacing:.03em}.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0}.tile{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:20px}.tile .sig{font-size:30px;line-height:1.2;color:var(--accent);font-family:Georgia,serif;margin-bottom:8px}.tile p{font-size:14px;color:var(--muted);margin:4px 0}.eq{display:block;text-align:center;overflow-x:auto;white-space:nowrap;padding:16px 9px;margin:20px 0;border-radius:10px;background:#172538;border:1px solid #36516a;color:#d8fff1;font-size:clamp(15px,1.7vw,20px);font-family:'Cambria Math','STIX Two Math',Georgia,serif;letter-spacing:.015em}.eqsmall{font-size:16px}.tablewrap{max-width:100%;overflow-x:auto;margin:16px 0 26px}table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;color:#bfd7e7;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#1b2c3e}td,th{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--line)}td:first-child{white-space:nowrap}tr:nth-child(even) td{background:rgba(42,67,88,.13)}.symbol{font-family:Georgia,'Cambria Math',serif;font-size:20px;color:#7ce3ce}ul,ol{padding-left:25px}li{padding:3px 0;color:#d6e2ea}code{font-family:'Cascadia Code','Consolas',monospace;font-size:.92em;color:#9edfd0}pre{white-space:pre;overflow-x:auto;margin:0;color:#c8e2e9;line-height:1.48;font:12.5px/1.52 'Cascadia Code',Consolas,monospace;padding:23px;background:var(--code)}.codewrap{margin:18px 0 26px;border:1px solid var(--line);border-radius:11px;overflow:hidden}.codehead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 15px;background:#192b3b;color:#cbdde6;font-size:12px;letter-spacing:.07em;font-weight:700;text-transform:uppercase}.copy{background:#243c4e;border:1px solid #3e5d70;color:white;border-radius:6px;padding:4px 10px;font-size:12px}.copy:hover{background:#33566c}.pill{display:inline-block;border:1px solid #2d5265;border-radius:30px;padding:2px 8px;color:#9fead9;font-size:11px;font-weight:700;letter-spacing:.05em}.rule{margin:30px 0;border-top:1px solid var(--line)}.def{display:grid;grid-template-columns:180px 1fr;gap:9px 20px;margin:20px 0}.def dt{color:var(--accent);font-weight:750}.def dd{margin:0;color:#d5e2ed}.footer{border-top:1px solid var(--line);margin-top:80px;padding-top:25px;color:var(--muted);font-size:12px}input[type=search]{width:100%;border:1px solid #477083;background:#0b1824;border-radius:9px;color:var(--fg);padding:12px 14px}.tiny{font-size:12px;color:var(--muted)}.tocgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:24px}.tocgrid a{background:#182b3c;border:1px solid #294155;border-radius:7px;padding:10px;font-size:13px;text-align:center}.timeline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:22px 0}.node{min-width:90px;text-align:center;border:1px solid #3e6b7e;padding:12px;border-radius:10px;background:#183044}.arrow{color:var(--accent);font-size:20px}.verdict{font-weight:700;color:#b0ead9}.negative{color:var(--red)}.teal{color:var(--accent)}.amber{color:var(--amber)}details{border:1px solid var(--line);padding:12px 16px;border-radius:9px;margin:10px 0;background:var(--surface)}summary{cursor:pointer;color:#dceee7;font-weight:700}summary::marker{color:var(--accent)}.btnprint{background:none;border:1px solid #315268;border-radius:7px;color:#d0e7ed;padding:7px 12px}.smallcaps{text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:var(--muted)}
+@media(max-width:900px){.shell{display:block}.sidebar{position:static;height:auto;padding:14px 22px}.sidebar .nav-links{display:none}.main{padding:0 22px 60px}.hero{padding:32px 0}.cols{grid-template-columns:1fr}.tocgrid{grid-template-columns:repeat(2,1fr)}.def{grid-template-columns:1fr}.def dd{margin-bottom:8px}}
+@media print{body{background:white;color:#171d24}.shell{display:block}.sidebar,.copy,.btnprint{display:none}.main{padding:0 15px}.panel,.tile,.eq,pre{background:#f4f6f7;color:#171d24;border-color:#ccc}a{color:#165c8b}.section{break-inside:avoid-page}.section p,li,td{color:#222}}
+</style></head>
+<body><div class="shell"><aside class="sidebar"><div class="brand">AGL / 0.4</div><div class="brand-sub">Formal specification</div><div class="sideline"></div><div class="nav-links"><div class="nav-title">Contents</div><a href="#abstract">Abstract</a><a href="#provenance">Source grounding</a><a href="#symbols">Symbol registry</a><a href="#types">Type system</a><a href="#ambition">Ambition · A</a><a href="#goal">Goal · G</a><a href="#loop">Loop · L</a><a href="#patterns">Composition</a><a href="#validation">Static validation</a><a href="#soundness">Soundness</a><a href="#epistemics">Epistemic progress</a><a href="#threats">Threat model</a><a href="#status">Completeness</a><a href="#next">What&#x27;s next</a></div><div class="sideline"></div><div class="smallcaps">Status</div><p class="tiny">Reference schema validated<br>11/11 regression tests passed<br>Version: 0.4 · 2026-10-18</p><button class="btnprint" onclick="window.print()">Print / Save PDF</button></aside>
+<main class="main"><div class="content"><header class="hero"><div class="eyebrow">An agent systems design language</div><h1>AGL v0.4<br><span class="highlight">Typed by Design.</span></h1><p class="lead">A collision-free symbol system and reference specification for Ambition, Goal, and Loop—with independent verification, governance, static contracts, trace auditing, and explicit proof limits.</p><div class="meta"><span class="chip">Self-contained HTML</span><span class="chip">Formal operator grammar</span><span class="chip">Reference validator</span><span class="chip">Research specification</span></div><div class="tocgrid"><a href="#symbols">Symbols</a><a href="#ambition">A grammar</a><a href="#goal">G grammar</a><a href="#loop">L grammar</a></div></header>
+
+<section id="abstract" class="section"><h2>0. Abstract and claim boundary</h2>
+<p><strong>AGL v0.4 is a proposed, typed domain-specific language</strong> for designing agent workflows around Ambition, Goal, and Loop. It integrates Felix Rieseberg’s four dimensions of ambition with a distinct goal contract, an observation-trigger-response loop, and cross-cutting verification and governance.</p>
+<div class="panel good"><strong>New in v0.4:</strong> (i) one global symbol registry; (ii) a typed contract model; (iii) refinement constraints beyond field presence; (iv) a reference JSON Schema and static validator; (v) retrospective event-trace checks; (vi) an explicit conditional soundness claim; and (vii) a separation of scientific discovery from mere hypothesis generation.</div>
+<p><strong>Not claimed:</strong> AGL is not an Anthropic feature, its schemas are not native slash-command arguments, and the reference validator does not prove runtime correctness, novelty of discoveries, or independent evaluator trustworthiness.</p>
+<div class="cols"><div class="tile"><div class="sig">A</div><strong>Objective formation</strong><p>Propose what is worth attempting, and using which methods.</p></div><div class="tile"><div class="sig">G</div><strong>Bounded execution</strong><p>Execute against a frozen contract and produce testable evidence.</p></div><div class="tile"><div class="sig">L</div><strong>Temporal control</strong><p>Observe changes, act selectively, preserve state, and stop.</p></div><div class="tile"><div class="sig">V + Γ</div><strong>Trust boundaries</strong><p>Independent evaluation, authorization and finite resources.</p></div></div>
+<div class="timeline"><div class="node">A<br><span class="tiny">propose</span></div><span class="arrow">→</span><div class="node">Select<br><span class="tiny">approve κ</span></div><span class="arrow">→</span><div class="node">G<br><span class="tiny">execute</span></div><span class="arrow">→</span><div class="node">V<br><span class="tiny">check</span></div><span class="arrow">→</span><div class="node">L<br><span class="tiny">observe</span></div><span class="arrow">→</span><div class="node">J<br><span class="tiny">review</span></div></div><p class="tiny">Conceptual AGL lifecycle created for this report; not an illustration from Felix or Anthropic.</p>
+</section>
+<section id="provenance" class="section"><h2>1. Provenance and epistemic status</h2>
+<table><thead><tr><th>Claim</th><th>Provenance</th><th>What it establishes</th></tr></thead><tbody>
+<tr><td>Speed / Altitude / Depth / Range</td><td><a href="https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/">Felix Rieseberg (13 Oct 2026)</a></td><td>Conceptual four-dimensional framework; Depth’s five moves, Range’s noun-to-verb transformation and specialist-method transfer.</td></tr>
+<tr><td><code>/goal</code> session operation</td><td><a href="https://code.claude.com/docs/en/goal">Anthropic Claude Code documentation</a></td><td>Continue turns toward a condition; a model evaluates transcript-visible completion. Not independent execution of tests.</td></tr>
+<tr><td><code>/loop</code> session operation</td><td><a href="https://code.claude.com/docs/en/scheduled-tasks">Anthropic Claude Code documentation</a></td><td>In-session fixed or adaptive recurrence; session and expiry limitations. Event modes require other infrastructure.</td></tr>
+<tr><td>All AGL types, contracts, formal conditions, audit machinery and proof sketches</td><td>Original synthesis in this specification</td><td>Proposed engineering standard and reference implementation, not a vendor-supported language.</td></tr>
+</tbody></table>
+<p><strong>Important conceptual caveat:</strong> The AGL design is intentionally stricter than the actual Claude slash-command semantics. A compiler or orchestrator must translate the abstract contracts into concrete, authorized tool calls, tests, and durable storage.</p></section>
+<section id="symbols" class="section"><h2>2. Canonical symbol registry</h2>
+<p>Every mathematical symbol below has <strong>exactly one declared meaning</strong>. A subscript restricts its referent, rather than introducing a second meaning. In particular, <code>Cost_S</code> is never a contract; contracts are denoted <code>κ</code>. <code>R</code> always means Range; strategic review is <code>J</code>.</p>
+<input id="symbol-filter" type="search" placeholder="Filter symbols or definitions…" aria-label="Filter symbol registry" />
+<div class="tablewrap"><table id="symbol-table"><thead><tr><th>Symbol</th><th>Kind</th><th>Unique definition</th></tr></thead><tbody><tr data-search="a operator ambition: produces proposals, never authorizes execution."><td class="symbol">A</td><td><span class="muted">operator</span></td><td>Ambition: produces proposals, never authorizes execution.</td></tr>
+<tr data-search="g operator goal: executes an approved finite contract."><td class="symbol">G</td><td><span class="muted">operator</span></td><td>Goal: executes an approved finite contract.</td></tr>
+<tr data-search="l operator loop: recurrently observes and may respond under contract."><td class="symbol">L</td><td><span class="muted">operator</span></td><td>Loop: recurrently observes and may respond under contract.</td></tr>
+<tr data-search="s ambition_dimension speed: same outcome, minimized cost_s."><td class="symbol">S</td><td><span class="muted">ambition_dimension</span></td><td>Speed: same outcome, minimized Cost_S.</td></tr>
+<tr data-search="h ambition_dimension altitude: outcome and delegation abstraction."><td class="symbol">H</td><td><span class="muted">ambition_dimension</span></td><td>Altitude: outcome and delegation abstraction.</td></tr>
+<tr data-search="d ambition_dimension depth: expert evidence and epistemic discovery."><td class="symbol">D</td><td><span class="muted">ambition_dimension</span></td><td>Depth: expert evidence and epistemic discovery.</td></tr>
+<tr data-search="r ambition_dimension range: verbification and transferable disciplinary methods."><td class="symbol">R</td><td><span class="muted">ambition_dimension</span></td><td>Range: verbification and transferable disciplinary methods.</td></tr>
+<tr data-search="v operator independent verification procedure."><td class="symbol">V</td><td><span class="muted">operator</span></td><td>Independent verification procedure.</td></tr>
+<tr data-search="γ policy governance: authority, approvals and resource bounds."><td class="symbol">Γ</td><td><span class="muted">policy</span></td><td>Governance: authority, approvals and resource bounds.</td></tr>
+<tr data-search="κ contract frozen approved execution contract."><td class="symbol">κ</td><td><span class="muted">contract</span></td><td>Frozen approved execution contract.</td></tr>
+<tr data-search="x input original task/problem."><td class="symbol">x</td><td><span class="muted">input</span></td><td>Original task/problem.</td></tr>
+<tr data-search="ξ context available facts, tools, and constraints."><td class="symbol">ξ</td><td><span class="muted">context</span></td><td>Available facts, tools, and constraints.</td></tr>
+<tr data-search="π proposal one ambition proposal."><td class="symbol">π</td><td><span class="muted">proposal</span></td><td>One ambition proposal.</td></tr>
+<tr data-search="π set nonempty set of ambition proposals."><td class="symbol">Π</td><td><span class="muted">set</span></td><td>Nonempty set of ambition proposals.</td></tr>
+<tr data-search="φ function functional objective produced by verbification."><td class="symbol">φ</td><td><span class="muted">function</span></td><td>Functional objective produced by verbification.</td></tr>
+<tr data-search="ρ_nv transform noun-to-verb transformation operator."><td class="symbol">ρ_NV</td><td><span class="muted">transform</span></td><td>Noun-to-verb transformation operator.</td></tr>
+<tr data-search="s_t state execution system state at step t."><td class="symbol">s_t</td><td><span class="muted">state</span></td><td>Execution system state at step t.</td></tr>
+<tr data-search="a_t action action taken at step t."><td class="symbol">a_t</td><td><span class="muted">action</span></td><td>Action taken at step t.</td></tr>
+<tr data-search="e_t evidence evidence observed at step t."><td class="symbol">e_t</td><td><span class="muted">evidence</span></td><td>Evidence observed at step t.</td></tr>
+<tr data-search="σ_t state persistent loop state at step t."><td class="symbol">σ_t</td><td><span class="muted">state</span></td><td>Persistent loop state at step t.</td></tr>
+<tr data-search="k_t knowledge validated knowledge state at step t."><td class="symbol">K_t</td><td><span class="muted">knowledge</span></td><td>Validated knowledge state at step t.</td></tr>
+<tr data-search="η_t hypothesis candidate new hypothesis at step t."><td class="symbol">η_t</td><td><span class="muted">hypothesis</span></td><td>Candidate new hypothesis at step t.</td></tr>
+<tr data-search="z_t score surprise/discrepancy score at step t."><td class="symbol">z_t</td><td><span class="muted">score</span></td><td>Surprise/discrepancy score at step t.</td></tr>
+<tr data-search="δ threshold surprise escalation threshold."><td class="symbol">δ</td><td><span class="muted">threshold</span></td><td>Surprise escalation threshold.</td></tr>
+<tr data-search="q_min threshold minimum quality threshold."><td class="symbol">q_min</td><td><span class="muted">threshold</span></td><td>Minimum quality threshold.</td></tr>
+<tr data-search="q function quality measure on an implementation proposal."><td class="symbol">Q</td><td><span class="muted">function</span></td><td>Quality measure on an implementation proposal.</td></tr>
+<tr data-search="cost_s function speed cost functional (time, money, human attention)."><td class="symbol">Cost_S</td><td><span class="muted">function</span></td><td>Speed cost functional (time, money, human attention).</td></tr>
+<tr data-search="p_κ predicate goal completion predicate under contract κ."><td class="symbol">P_κ</td><td><span class="muted">predicate</span></td><td>Goal completion predicate under contract κ.</td></tr>
+<tr data-search="w_κ schema evidence witness requirements under contract κ."><td class="symbol">W_κ</td><td><span class="muted">schema</span></td><td>Evidence witness requirements under contract κ.</td></tr>
+<tr data-search="v_κ function verifier configured for κ, instantiating v."><td class="symbol">V_κ</td><td><span class="muted">function</span></td><td>Verifier configured for κ, instantiating V.</td></tr>
+<tr data-search="i_κ predicate always-on state invariant under κ."><td class="symbol">I_κ</td><td><span class="muted">predicate</span></td><td>Always-on state invariant under κ.</td></tr>
+<tr data-search="θ_γ predicate governance transition-authorization predicate."><td class="symbol">Θ_Γ</td><td><span class="muted">predicate</span></td><td>Governance transition-authorization predicate.</td></tr>
+<tr data-search="τ schedule temporal inspection interval or timing policy."><td class="symbol">τ</td><td><span class="muted">schedule</span></td><td>Temporal inspection interval or timing policy.</td></tr>
+<tr data-search="ω function loop observation function."><td class="symbol">Ω</td><td><span class="muted">function</span></td><td>Loop observation function.</td></tr>
+<tr data-search="δ function loop change-detector function."><td class="symbol">Δ</td><td><span class="muted">function</span></td><td>Loop change-detector function.</td></tr>
+<tr data-search="χ predicate loop action trigger."><td class="symbol">χ</td><td><span class="muted">predicate</span></td><td>Loop action trigger.</td></tr>
+<tr data-search="f function loop authorized response policy."><td class="symbol">F</td><td><span class="muted">function</span></td><td>Loop authorized response policy.</td></tr>
+<tr data-search="β budget total resource budget, including cumulative bound."><td class="symbol">β</td><td><span class="muted">budget</span></td><td>Total resource budget, including cumulative bound.</td></tr>
+<tr data-search="j operator strategic review of accumulated evidence."><td class="symbol">J</td><td><span class="muted">operator</span></td><td>Strategic review of accumulated evidence.</td></tr>
+<tr data-search="select function governed selection of an approved contract."><td class="symbol">Select</td><td><span class="muted">function</span></td><td>Governed selection of an approved contract.</td></tr>
+<tr data-search="t index nonnegative execution step index."><td class="symbol">t</td><td><span class="muted">index</span></td><td>Nonnegative execution step index.</td></tr></tbody></table></div>
+<p class="tiny">Additional ASCII names in the JSON files (such as <code>cost_S</code>) are serializable aliases for the mathematical names above. Each alias maps to one concept. The index <code>t</code> belongs to the natural numbers, starting at zero.</p>
+</section>
+<section id="types" class="section"><h2>3. Type system and design-by-contract</h2>
+<p>The language has first-class types <code>Problem</code>, <code>Context</code>, <code>Proposal</code>, <code>Contract</code>, <code>GoalSpec</code>, <code>LoopSpec</code>, <code>Evidence</code>, <code>Verdict</code>, and <code>Trace</code>. The type signatures below define composition rather than merely arranging slash commands.</p>
+<div class="eq">A : Problem × Context → NonEmpty(Proposal)</div><p>Given original task <code>x</code> and context <code>ξ</code>, Ambition produces a nonempty collection <code>Π</code> of candidate proposals <code>π</code>. It may suggest methods and measures, but cannot grant authority.</p>
+<div class="eq">Select : NonEmpty(Proposal) × Γ → Result(κ, Rejection)</div><p><code>Select</code> applies governance <code>Γ</code>. Only an approved and frozen contract <code>κ</code> may enter execution. Rejection or deferral does not fabricate a contract.</p>
+<div class="eq">G : κ × State → GoalOutcome × Trace</div><p>Goal execution receives the immutable contract, attempts permitted actions, records witnesses, and returns a status plus an auditable execution trace.</p>
+<div class="eq">L : LoopSpec × PersistentState → Stream(Iteration)</div><p>Loop recurrence yields a sequence of observations and permitted actions. Its scheduler can be fixed, adaptive or externally event-driven <em>at the AGL abstraction layer</em>; native Claude <code>/loop</code> implements only part of this design.</p>
+<h3>Refinement typing</h3><p>Passing a structural schema is necessary but not sufficient. A contract is admissible only if it is approved, immutable for the duration of the goal, within governance resources, and paired with a verifiable terminal condition. A loop is admissible only if safety enforcement is configured for replay, storage, authority, budgets and concurrency.</p>
+<div class="eq eqsmall">WellFormed(spec) = SchemaValid(spec) ∧ ReferencesResolve(spec) ∧ RefinementsHold(spec)</div>
+<p><code>WellFormed</code> is a design-time predicate. It does <strong>not</strong> imply that the implementation or the environment is correct.</p></section>
+<section id="ambition" class="section"><h2>4. Typed grammar of Ambition — A</h2>
+<p><strong>Grammar:</strong> Ambition comprises four independently adjustable dimensions. They are not automatically sequential, and all four can be represented even when the proposal emphasizes only a subset.</p>
+<div class="codewrap"><div class="codehead"><span>A — abstract operator grammar</span><button class="copy" type="button">Copy</button></div><pre>AMBITION {
+  S: SPEED {
+    BASELINE; Cost_S; QUALITY_FLOOR;
+    SAME_OUTCOME_CONSTRAINT; MEASUREMENT
+  }
+  H: ALTITUDE {
+    TASK; IMMEDIATE_GOAL; ULTIMATE_GOAL;
+    OBSERVABLE_OUTCOME; DELEGATION_BOUNDARY;
+    CAPABILITY_REQUIREMENTS
+  }
+  D: DEPTH {
+    EXPERT_STANDARD; INSTRUMENTS;
+    STRETCH { TARGET; FEASIBILITY_TEST }
+    CHALLENGE { ASSUMPTIONS; FALSIFICATION }
+    DISCOVERY {
+      KNOWLEDGE_BASELINE; EXPLORATION_POLICY;
+      SURPRISE_DETECTOR; HYPOTHESIS_GENERATOR;
+      DISCRIMINATING_EXPERIMENT; EVIDENCE_EVALUATOR;
+      KNOWLEDGE_REVISION_RULE; NOVELTY_CHECK;
+      REPLICATION_POLICY; STOPPING_RULE
+    }
+    OUTSIDE_JUDGE
+  }
+  R: RANGE {
+    ARTIFACT_NOUN
+    VERBIFY { ACTOR; ACTION_VERB; INTENDED_EFFECT;
+              OPERATING_CONTEXT; SUCCESS_OBSERVATION;
+              OUTPUT: FUNCTIONAL_OBJECTIVE }
+    DISCIPLINE_DISCOVERY(INPUT: VERBIFY.OUTPUT)
+    TRANSFER { METHOD; APPLICABILITY_TEST }
+    CREW { FUNCTIONS; DELIVERABLES }
+    INTEGRATION { CONFLICT_RESOLUTION; OUTCOME_TEST }
+  }
+  PROPOSAL_POLICY { SELECTION_RULE; UNCERTAINTY_REPRESENTATION }
+}</pre></div>
+<h3>4.1 Speed — S</h3><p>Speed must optimize the cost of producing the <em>same accepted outcome</em>. A lower cost without preservation of outcome is not an improvement in Speed.</p>
+<div class="eq">min<sub>π ∈ Π<sub>κ</sub></sub> Cost<sub>S</sub>(π) &nbsp; subject to &nbsp; Q(π) ≥ q<sub>min</sub></div>
+<p>Here <code>Πκ</code> denotes those candidate proposals satisfying contract <code>κ</code>. <code>Q</code> measures quality and <code>q_min</code> is the minimum accepted quality. <code>Cost_S</code> may scalarize wall time, monetary expense and human attention using declared nonnegative weights and units; its exact form is chosen by the contract. The quality floor must not stand in for the requirement to preserve the objective.</p>
+<h3>4.2 Altitude — H</h3><p>Requires <strong>task → immediate goal → ultimate goal → observable outcome</strong>. It also specifies which decisions the agent may own and what capabilities are missing. A proposed higher-altitude objective must not bypass authorization.</p>
+<h3>4.3 Depth — D</h3><p>Retains Felix’s professional instruments, stretch targets, adversarial challenge, knowledge discovery and outside judge. Unlike v0.2, discovery is an <em>epistemic state transition</em>, not just an output label.</p>
+<div class="eq eqsmall">e<sub>t</sub> → z<sub>t</sub> → η<sub>t</sub> → discriminating test → K<sub>t+1</sub></div>
+<p>Evidence <code>e_t</code> is compared with the validated knowledge state <code>K_t</code>. A discrepancy score <code>z_t</code> exceeding a prespecified threshold <code>δ</code> prompts the generation of a candidate hypothesis <code>η_t</code>. Independent tests, replication and scrutiny may then justify revising the knowledge state. An anomaly alone does not establish discovery.</p>
+<div class="panel warn"><strong>Epistemic discipline:</strong> Hypothesis generation ≠ empirical support ≠ scientific novelty. The third requires an appropriate prior-art search and evaluation beyond the training or observation set. Repeated exploratory testing requires controls for selection bias and false discoveries.</div>
+<h3>4.4 Range — R</h3><p>The critical dependency is an explicit noun-to-verb transformation <code>ρ_NV</code>. Discipline discovery consumes the resulting functional objective <code>φ</code>; it must not independently begin from the original noun description.</p>
+<div class="eq">ρ<sub>NV</sub>(artifact noun, ξ) → φ → discipline discovery → method transfer</div>
+<p>The <code>VERBIFY</code> sub-contract must identify an actor, an action verb, the intended effect, operating context and observable success. Transfer must identify actual professional methods, applicability assumptions and integration tests. Merely prompting specialist personas fails the Range refinement.</p>
+<h3>4.5 Proposal selection</h3><p>Ambition returns multiple possible <code>π</code> values, with expected benefits, uncertain feasibility, costs, risks and proposed acceptance tests. Governance <code>Γ</code> determines whether a proposal may become <code>κ</code>. The selection rule may be multicriteria or Pareto-based: no obligation exists to maximize ambition in isolation.</p></section>
+<section id="goal" class="section"><h2>5. Typed grammar of Goal — G</h2>
+<div class="codewrap"><div class="codehead"><span>G — abstract operator grammar</span><button class="copy" type="button">Copy</button></div><pre>GOAL {
+  CONTRACT_REF; EXECUTOR_ID; OBJECTIVE
+  PRECONDITIONS
+  COMPLETION { PREDICATE; CHECKS }
+  WITNESS { EVIDENCE_SCHEMA; PROVENANCE_REQUIREMENTS }
+  EVALUATOR_REF -&gt; VERIFIER
+  INVARIANTS { STATE; TRANSITIONS; ACCEPTANCE }
+  EXECUTION_POLICY { PERMITTED_METHODS; RETRY_POLICY }
+  BUDGET { MAX_TURNS; MAX_ELAPSED_SECONDS; MAX_MONEY }
+  TERMINATION {
+    VERIFIED_SUCCESS | BLOCKED |
+    BUDGET_EXHAUSTED | CANCELLED
+  }
+  OUTPUT { ARTIFACTS; REPORT_PATH }
+}</pre></div>
+<h3>5.1 Distinguish four things</h3>
+<table><thead><tr><th>Element</th><th>Meaning</th><th>May it be inferred from an assertion?</th></tr></thead><tbody>
+<tr><td>Objective</td><td>Desired state of the world</td><td>No</td></tr>
+<tr><td>Completion predicate P<sub>κ</sub></td><td>Condition that must hold for contract κ</td><td>No</td></tr>
+<tr><td>Witness W<sub>κ</sub></td><td>Required evidence and provenance schema</td><td>No</td></tr>
+<tr><td>Verifier V<sub>κ</sub></td><td>Procedure that checks evidence against criteria and issues a verdict</td><td>No — it must actually execute</td></tr></tbody></table>
+<div class="eq eqsmall">V<sub>κ</sub>(e<sub>t</sub>, P<sub>κ</sub>) ∈ {PASS, FAIL, INCONCLUSIVE}</div>
+<p>A verifier may return PASS only if the specified evidence suffices under its declared assumptions. The model evaluator built into <code>/goal</code> is a continuation mechanism that judges the transcript; it is not automatically an external verifier.</p>
+<h3>5.2 State vs. transition obligations</h3><p>The symbol <code>Iκ</code> uniquely denotes the always-on state invariant for κ. The symbol <code>ΘΓ</code> uniquely denotes the authorization predicate for governance Γ. The index <code>t</code> denotes the execution step; <code>s_t</code> is its observed state and <code>a_t</code> the action at that step.</p>
+<div class="eq eqsmall">∀t ≥ 0: I<sub>κ</sub>(s<sub>t</sub>) = true</div>
+<div class="eq eqsmall">∀t ≥ 0: Θ<sub>Γ</sub>(s<sub>t</sub>, a<sub>t</sub>, s<sub>t+1</sub>) = true</div>
+<p>The first applies to <em>always-on</em> properties; the second to authorized transitions. Acceptance-only properties belong to the final verifier rather than being mislabeled universal invariants.</p>
+<h3>5.3 Terminal states</h3>
+<p>The language distinguishes <code>VERIFIED_SUCCESS</code>, <code>BLOCKED</code>, <code>BUDGET_EXHAUSTED</code> and <code>CANCELLED</code>. A complete orchestrator may also record <code>FAILED</code> and <code>INCONCLUSIVE</code> as evaluation outcomes; the reference schema exposes the four operational terminal statuses. Termination itself is not proof of success.</p></section>
+<section id="loop" class="section"><h2>6. Typed grammar of Loop — L</h2>
+<div class="codewrap"><div class="codehead"><span>L — abstract operator grammar</span><button class="copy" type="button">Copy</button></div><pre>LOOP {
+  CONTRACT_REF
+  TIMING { MODE: FIXED | ADAPTIVE | EVENT; INTERVAL? }
+  OBSERVATION { SOURCES; FRESHNESS_RULE }
+  CHANGE_DETECTION { EVENT_KEY; CHECKPOINT; COMPARISON }
+  TRIGGER { PREDICATE; SIGNIFICANCE_RULE }
+  RESPONSE { AUTHORIZED_ACTIONS; NO_CHANGE: NO_OP;
+             ON_VIOLATION: HALT | ESCALATE }
+  PERSISTENT_STATE { STORE; CHECKPOINT_POLICY; DURABILITY }
+  SAFETY {
+    IDEMPOTENCY { EVENT_KEY; EFFECT_KEY; REPLAY_POLICY }
+    CONTINUITY { ATOMIC_CHECKPOINT; CRASH_RECOVERY }
+    BOUNDEDNESS { PER_RUN_CAP; CUMULATIVE_CAP;
+                  MAX_RETRIES; EXPIRY }
+    SCOPE { APPROVED_CONTRACT; APPROVAL_MECHANISM }
+    CONCURRENCY { PROTECTED_RESOURCES;
+                  COORDINATION; CONFLICT_POLICY }
+  }
+  ENFORCEMENT { STATIC_CHECKS; RUNTIME_GUARDS; VIOLATION }
+  TERMINATION { STOP_PREDICATE; EXPIRY_BEHAVIOR }
+  OUTPUT { EVIDENCE_LOG; STATE_LOG }
+}</pre></div>
+<h3>6.1 Observe → detect change → trigger → respond → checkpoint</h3><p>The loop’s temporal policy <code>τ</code> says when to inspect. Its observation function <code>Ω</code> returns evidence. Its change detector <code>Δ</code> separates new evidence from repeats. Its trigger <code>χ</code> determines whether a response is justified, and <code>F</code> defines permitted responses. Persistent state <code>σ_t</code> records checkpoints and handled effects.</p>
+<div class="eq eqsmall">e<sub>t</sub> = Ω(σ<sub>t</sub>) ; &nbsp; Δ(e<sub>t</sub>,σ<sub>t</sub>) → χ → F or NO_OP</div>
+<p>Doing nothing when no material evidence changed is a successful loop iteration, not a failure.</p>
+<h3>6.2 Five safety refinements</h3>
+<div class="tablewrap"><table><thead><tr><th>Obligation</th><th>Specification field</th><th>External enforcement requirement</th></tr></thead><tbody>
+<tr><td>Idempotency</td><td>Event and effect identity; replay policy</td><td>Atomic effect ledger or provider idempotency support</td></tr>
+<tr><td>State continuity</td><td>Checkpoint, atomicity, crash recovery</td><td>Durable transactional store and reconciliation</td></tr>
+<tr><td>Boundedness</td><td>Per-run and cumulative limits; expiry</td><td>Metering enforced before action and across sessions</td></tr>
+<tr><td>Scope authority</td><td>Contract reference, permission and approval</td><td>Least privilege, independent action admission</td></tr>
+<tr><td>Concurrency</td><td>Protected resources, lease or lock, conflict policy</td><td>Shared coordination and conflict resolution</td></tr>
+</tbody></table></div>
+<div class="panel warn"><strong>Do not confuse declared mechanisms with guarantees.</strong> Logging <code>authorization_checked: true</code> is not proof authorization really happened. A trace auditor is not an atomic storage system. Exactly-once external effects usually require coordination with the recipient service, not just checking a local event ID.</div>
+<h3>6.3 Scheduler portability</h3><p>The abstract Loop type supports <code>fixed</code>, <code>adaptive</code>, and <code>event</code> timing. Claude Code’s documented <code>/loop</code> is in-session scheduling with fixed or dynamic recurrence, while persistent cloud routines and other event infrastructure address longer-lived behavior. The language should not promise a scheduler capability it has not bound to a compatible runtime.</p></section>
+<section id="patterns" class="section"><h2>7. Typed composition of the four patterns</h2>
+<div class="tablewrap"><table><thead><tr><th>Pattern</th><th>Canonical typed pipeline</th><th>Validation emphasis</th></tr></thead><tbody>
+<tr><td><span class="pill">P1</span> Sprint</td><td><code>A → Select → G → V</code></td><td>Contract frozen before execution; terminal witness accepted</td></tr>
+<tr><td><span class="pill">P2</span> Radar</td><td><code>A → Select(charter) → L[Δ ⇒ A]</code></td><td>Opportunity discoveries do not authorize their implementation</td></tr>
+<tr><td><span class="pill">P3</span> Watchdog</td><td><code>G → V → L[χ ⇒ F]</code></td><td>Subsequent actions remain inside the committed repair scope</td></tr>
+<tr><td><span class="pill">P4</span> Factory</td><td><code>(A → Select → G → V → L → J)*</code></td><td>Each strategic revision requires a fresh contract and independent review</td></tr>
+</tbody></table></div>
+<p>In P2, <code>Select(charter)</code> authorizes a bounded discovery workflow; it does not authorize every proposal that workflow subsequently generates. The current reference schema consequently requires a frozen contract for monitoring patterns as well as for goal execution.</p>
+<p>In P4, <code>J</code> is review, while <code>R</code> remains Range. The Kleene star denotes possible iteration and is constrained by expiry, approval and resource caps; it is not a license for perpetual unattended action.</p></section>
+<section id="validation" class="section"><h2>8. Static checking and reference implementation</h2>
+<p>The downloadable package includes <code>schema.json</code> (Draft 2020-12), <code>validate_agl.py</code>, an abstract valid specimen, a unique-symbol registry, and 11 tests. These constitute a working <em>reference preflight</em>, not a complete AGL compiler.</p>
+<div class="cols"><div class="tile"><div class="sig">01</div><strong>Schema type-checking</strong><p>Recognizes structural fields, types, enumeration values, conditional presence and numeric bounds.</p></div><div class="tile"><div class="sig">02</div><strong>Cross-field checking</strong><p>Resolves contracts and evaluators, checks frozen approvals, enforces declared scopes, sums reserved budgets, validates timing and guards.</p></div><div class="tile"><div class="sig">03</div><strong>Trace auditing</strong><p>Checks an emitted log for duplicate effect IDs, missing recorded authorization, stale checkpoints, and observed budget overruns.</p></div><div class="tile"><div class="sig">04</div><strong>Runtime enforcement</strong><p>Requires real trusted storage, provider permissions, effect-aware idempotency, resource metering, and independent evaluation. Not implemented by this reference.</p></div></div>
+<div class="codewrap"><div class="codehead"><span>Windows PowerShell — reproducible validation</span><button class="copy" type="button">Copy</button></div><pre>python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install jsonschema
+python validate_agl.py abstract_valid_spec.json
+python -m unittest -v test_validator.py</pre></div>
+<div class="panel good"><strong>Verified when this report was built:</strong> The valid abstract specimen passes the schema and semantic validator. The 11 included positive/negative tests pass, including missing discovery fields, malformed Range transformation, evaluator identity collisions, scope escalation, absent runtime guard declarations, budget violations, replayed external effect IDs, and nonmonotonic checkpoints.</div>
+<h3>Reference check coverage</h3><ul><li><strong>Expressed and checked:</strong> structure, names and typed fields; conditional pattern requirements; contract reference equality; policy scope subset; frozen approval; distinct executor and evaluator IDs; declared guards; static budget cap arithmetic.</li><li><strong>Trace-audited if logged:</strong> duplicate effect IDs; authorization claim presence; lease reference presence; checkpoint ordering; observed per-run and cumulative costs.</li><li><strong>Not verified:</strong> honest logs; atomic commits; correctly implemented leases; independently trusted evaluation; real-world success; rigorous scientific novelty.</li></ul>
+<p>A future full compiler could emit Claude prompts and trusted wrappers from a validated AGL specification. That transformation is not implemented here.</p></section>
+<section id="soundness" class="section"><h2>9. Conditional soundness: what can be established?</h2>
+<p><strong>Definition:</strong> A validator is <em>structurally sound</em> for a stated rule when acceptance implies that the rule has been checked correctly. That is different from proving the controlled agent safe.</p>
+<h3>A conditional safety proposition</h3>
+<div class="panel"><p>Assume (1) every consequential action passes an independent, correctly implemented authorization guard; (2) all side effects and checkpoints are atomically or safely reconciled; (3) distributed concurrency is correctly controlled; (4) resource meters are trustworthy; and (5) external verification evidence is authentic and the verifier is sound for its specified acceptance predicate.</p><p>Then an execution that passes all these runtime guards and ends with an accepted verifier result can be considered compliant with the <em>declared</em> authorization, accounting and acceptance conditions.</p></div>
+<p>This is a <strong>conditional proposition</strong>, not an established theorem about Claude Code or the provided Python validator. Removing any assumption weakens the conclusion. It does not imply that the chosen objective is beneficial, that scientific claims are true outside the test domain, or that model behavior is generally aligned.</p>
+<h3>Independent evaluation as a trust boundary</h3><p>The native <code>/goal</code> evaluator cannot substitute for <code>Vκ</code> unless its verification needs are wholly satisfied by trusted transcript-visible evidence and the remaining limitations are accepted. For consequential changes, prefer tool-executed tests with provenance retained outside the worker's unrestricted control.</p></section>
+<section id="epistemics" class="section"><h2>10. Epistemic progress is a separate acceptance dimension</h2>
+<p>Felix's Depth dimension ultimately aims beyond polished execution: a model should be able to learn something that was not known to the current investigator. v0.4 therefore treats discovery as a typed sequence of epistemic transitions rather than a prompt adjective.</p>
+<div class="tablewrap"><table><thead><tr><th>Stage</th><th>Necessary demonstration</th><th>What it does not prove</th></tr></thead><tbody>
+<tr><td>Surprise</td><td>Observation violates a specified expectation</td><td>That a new hypothesis is correct</td></tr>
+<tr><td>Hypothesis</td><td>Candidate explanation with testable predictions</td><td>That the hypothesis is supported</td></tr>
+<tr><td>Empirical support</td><td>Discriminating test on appropriate held-out evidence</td><td>Scientific novelty or causal identification</td></tr>
+<tr><td>Replication</td><td>Reproduction under independent conditions</td><td>Universal validity</td></tr>
+<tr><td>Novelty</td><td>Documented comparison to prior literature and baselines</td><td>Importance or generality beyond evidence</td></tr>
+</tbody></table></div>
+<p>A useful epistemic evaluator should be able to return <code>INCONCLUSIVE</code> without treating it as execution failure. Under severe distribution shift, even reproducible findings can fail to generalize. AGL should reward calibrated uncertainty and well-documented null results instead of maximizing discoveries by quantity.</p></section>
+<section id="threats" class="section"><h2>11. Threat model and open proof obligations</h2><ul>
+<li><strong>Prompt injection:</strong> Retrieved logs, web pages and repository content may contain instructions that must remain data, not authority.</li>
+<li><strong>Approval spoofing:</strong> A text field naming an approver does not replace a cryptographically or operationally trusted approval mechanism.</li>
+<li><strong>Evidence contamination:</strong> Workers may alter test fixtures, evaluation criteria, baselines or data partitions.</li>
+<li><strong>Replay and side-effect races:</strong> Crashes between an external action and local checkpoint can cause duplicate effects without transactional reconciliation.</li>
+<li><strong>Metric gaming:</strong> The system may optimize a narrow score at the expense of the human's actual objective.</li>
+<li><strong>Strategic drift:</strong> Repeated ambition reviews may expand or replace the approved mission unless contract revisions are gated.</li>
+<li><strong>Epistemic false positives:</strong> Repeated search over many hypotheses can manufacture apparently striking discoveries.</li>
+</ul>
+<p>AGL v0.4 specifies places where these risks must be checked; it does not provide a complete defense. Runtime enforcement and adversarial testing are separate implementation projects.</p></section>
+<section id="status" class="section"><h2>12. Completeness ledger</h2>
+<div class="tablewrap"><table><thead><tr><th>Requirement</th><th>v0.4 status</th><th>Remaining work</th></tr></thead><tbody>
+<tr><td>Unique global symbol definitions</td><td class="verdict">Specified</td><td>Automated name-resolution lint for formulas and documentation</td></tr>
+<tr><td>Felix's four ambition dimensions</td><td class="verdict">Specified</td><td>Empirical calibration of dimension selection</td></tr>
+<tr><td>Discovery and verbification as operations</td><td class="verdict">Specified</td><td>Executable semantics beyond schema obligations</td></tr>
+<tr><td>Goal witness and evaluator</td><td class="verdict">Specified</td><td>Trustworthy instrument adapters and evidence attestation</td></tr>
+<tr><td>Loop safety and state continuity</td><td class="verdict">Specified</td><td>Live transactional enforcement and recovery tests</td></tr>
+<tr><td>JSON Schema and cross-field checks</td><td class="verdict">Implemented in reference</td><td>Full language parser, complete static analysis, broader tests</td></tr>
+<tr><td>Trace validator</td><td class="verdict">Implemented in reference</td><td>Trusted, complete event capture and real admission control</td></tr>
+<tr><td>Formal proof of end-to-end safety</td><td class="negative">Not established</td><td>Formal operational model and verified runtime assumptions</td></tr>
+<tr><td>Verified productivity / discovery benefits</td><td class="negative">Not established</td><td>Independent benchmark and controlled ablations</td></tr>
+</tbody></table></div></section>
+<section id="next" class="section"><h2>13. What's next — AGL v0.5</h2>
+<p>The next version should not add more named prompt patterns. It should close the most important implementation gaps:</p>
+<ol><li><strong>Trusted action admission:</strong> implement authorization, resource budgets and stateful effect keys as a real runtime guard before tool calls.</li><li><strong>Verified state machine:</strong> formalize action transitions, crash/retry semantics and distributed lease rules; model-check safety conditions.</li><li><strong>Evidence adapters:</strong> distinguish produced output from independent measurement, with protected benchmark versions and authentic provenance.</li><li><strong>Empirical evaluation:</strong> test whether AGL’s additional structure improves independently accepted work per human-hour, net of latency, dollar cost, and failure rates.</li></ol>
+<div class="panel"><strong>Research-level question:</strong> Under what conditions does strategic reframing have positive expected value, and can an agent learn when <em>not</em> to invoke Ambition? A metareasoning policy should compare expected decision improvement against the cost and risk of reconsideration, rather than maximizing the frequency of ambitious plans.</div>
+</section>
+
+<footer class="footer"><p>AGL v0.4 is an independently proposed specification and not an official Anthropic standard. Source material is attributed inline. This file embeds all fonts, styles, scripts and diagrams locally; external source links are optional.</p><p>Built: 18 October 2026 · Companion package: <code>AGL_v0.4_reference_implementation.zip</code></p></footer></div></main></div>
+<script>(function(){const q=document.getElementById('symbol-filter');const rows=[...document.querySelectorAll('#symbol-table tbody tr')];q.addEventListener('input',()=>{const value=q.value.trim().toLowerCase();for(const r of rows)r.hidden=!r.dataset.search.includes(value);});document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{const code=b.closest('.codewrap').querySelector('pre').innerText;try{await navigator.clipboard.writeText(code);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1100)}catch(e){b.textContent='Select text';}}));const nav=[...document.querySelectorAll('.sidebar .nav-links a')];const ob=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){nav.forEach(n=>n.classList.toggle('active',n.getAttribute('href')==='#'+e.target.id));}}},{rootMargin:'-10% 0px -75% 0px'});document.querySelectorAll('.section').forEach(s=>ob.observe(s));})();</script>
+</body></html>
