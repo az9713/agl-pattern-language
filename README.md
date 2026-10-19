@@ -20,7 +20,7 @@ The motivating observation is that productivity with Claude is constrained not j
 
 | Operator | Responsibility | Related Claude capability |
 | --- | --- | --- |
-| `A` — Ambition | Generate improved objectives and expert-grade methods using **Speed, Altitude, Depth, Range** | Felix-inspired custom `/be-ambitious` skill |
+| `A` — Ambition | Generate improved objectives and expert-grade methods using **Speed, Altitude, Depth, Range** | External [`/be-ambitious` skill](https://github.com/az9713/be-ambitious-skill) |
 | `G` — Goal | Execute a frozen, bounded, verifiable contract | `/goal` |
 | `L` — Loop | Revisit new evidence on a schedule, without replaying effects | `/loop` |
 | `V` — Verification | Evaluate witnesses against explicit acceptance rules | Executable checks and external evidence |
@@ -32,6 +32,10 @@ The patterns are *abstract designs*, not literal slash-command nesting syntax:
 - **P2 — Opportunity Radar:** `A → L[new evidence ⇒ A]`
 - **P3 — Completion Watchdog:** `G → V → L[new issue ⇒ authorized response]`
 - **P4 — Evolutionary Factory:** `(A → Select → G → V → L → J)*`, where `J` is strategic review
+
+## Companion `/be-ambitious` skill
+
+The `/be-ambitious` Claude Code skill is **not bundled in this repository**. AGL v0.4 specifies the Ambition operator (`A`) and its four dimensions, but its reference implementation validates abstract contracts rather than installing the skill. To use the actual skill, consult the separate repository: **[az9713/be-ambitious-skill](https://github.com/az9713/be-ambitious-skill)**. Follow that repository's own installation and usage instructions. AGL's `A` contract and the external skill are related conceptually; they should not be assumed to have identical schemas or implementation behavior.
 
 ## Contents
 
