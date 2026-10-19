@@ -10,9 +10,9 @@
 
 GitHub's README renderer does not permit embedding a live interactive website in the document itself. The screenshots below are genuine previews of the published HTML, and each image is a link to the live page.
 
-[![AGL v0.4 technical specification preview](docs/assets/spec-preview.webp)](https://az9713.github.io/agl-pattern-language/AGL_v0.4.html)
+[![AGL v0.4 technical specification preview](docs/assets/spec-preview.png)](https://az9713.github.io/agl-pattern-language/AGL_v0.4.html)
 
-[![AGL v0.4 onboarding manual preview](docs/assets/onboarding-preview.webp)](https://az9713.github.io/agl-pattern-language/ONBOARDING.html)
+[![AGL v0.4 onboarding manual preview](docs/assets/onboarding-preview.png)](https://az9713.github.io/agl-pattern-language/ONBOARDING.html)
 
 ## Why AGL?
 
